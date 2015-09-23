@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">roomfinder</string>
+    <string name="app_name">UIExplorer App</string>
+    <string name="title_activity_login">Login</string>
 </resources>
