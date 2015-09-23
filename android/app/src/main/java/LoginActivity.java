@@ -1,6 +1,8 @@
 package com.facebook.react.uiapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,11 +15,13 @@ import java.util.Map;
 
 public class LoginActivity extends Activity {
 
-	public static final String GOOGLE_LOGIN_URL = "https://accounts.google.com/o/oauth2/auth?client_id=894031461599-oljc38se5i9rakjljk3cn3b40rdb72dl.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost&response_type=code&scope=email%20openid%20profile";
+	private static final String GOOGLE_CLIENT_ID_ARG = "googleClientId";
+	private String mGoogleClientId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mGoogleClientId = getIntent().getExtras().getString(GOOGLE_CLIENT_ID_ARG);
 		setContentView(R.layout.activity_login);
 		WebView webview = (WebView) findViewById(R.id.webview);
 		WebSettings settings = webview.getSettings();
@@ -45,11 +49,16 @@ public class LoginActivity extends Activity {
 				Log.i("TAG", "Finished loading URL: " + url);
 			}
 		});
-		webview.loadUrl(GOOGLE_LOGIN_URL);
+		webview.loadUrl("https://accounts.google.com/o/oauth2/auth?client_id=" + mGoogleClientId + "&redirect_uri=http%3A%2F%2Flocalhost&response_type=code&scope=email%20openid%20profile");
 	}
 
 	private void notifyLogin(Map<String, String> result) {
 		com.facebook.react.uiapp.LoginModule.sendEvent(result);
 	}
 
+	public static Intent newIntent(Context context, String googleClientId) {
+		Intent intent = new Intent(context, com.facebook.react.uiapp.LoginActivity.class);
+		intent.putExtra(GOOGLE_CLIENT_ID_ARG, googleClientId);
+		return intent;
+	}
 }

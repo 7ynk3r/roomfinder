@@ -40,12 +40,12 @@ public class LoginModule extends ReactContextBaseJavaModule {
 	}
 
 	@ReactMethod
-	public void login(Callback callback) {
+	public void login(String googleClientId, Callback callback) {
 		sCallback = callback;
 		ReactApplicationContext reactApplicationContext = getReactApplicationContext();
-		Intent i = new Intent(reactApplicationContext, com.facebook.react.uiapp.LoginActivity.class);
-		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		reactApplicationContext.startActivity(i);
+		Intent intent = com.facebook.react.uiapp.LoginActivity.newIntent(reactApplicationContext, googleClientId);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		reactApplicationContext.startActivity(intent);
 	}
 
 }

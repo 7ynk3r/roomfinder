@@ -18,6 +18,7 @@ var LoginModule = require('LoginModule');
 var EventEmitter = require('EventEmitter');
 var test = require('Subscribable');
 var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+var secret = require('./secret');
 
 
 var roomfinder = React.createClass({
@@ -38,9 +39,10 @@ var roomfinder = React.createClass({
             <TouchableWithoutFeedback
               onPress={() =>
                 LoginModule.login(
-                    (successCallback) => {
-                        console.log(successCallback);
-                      })
+                  secret.google.client_id, 
+                  (successCallback) => {
+                    console.log(successCallback);
+                  })
                 }>
               <Text style={styles.text}>Click me to LogIn.</Text>
             </TouchableWithoutFeedback>
