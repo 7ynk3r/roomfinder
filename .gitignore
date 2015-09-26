@@ -29,3 +29,13 @@ npm-debug.log
 
 # roomfinder 
 secret.js
+
+# idea files
+*.iml
+.idea
+
+# gradle
+.gradle
+
+# android specific:
+local.properties

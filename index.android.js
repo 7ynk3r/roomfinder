@@ -1,5 +1,5 @@
 /**
- * Sample React Native App
+ * Sample React Native App: david
  * https://github.com/facebook/react-native
  */
 'use strict';
@@ -10,24 +10,44 @@ var {
   StyleSheet,
   Text,
   View,
+  TouchableWithoutFeedback
 } = React;
 
+var LoginModule = require('LoginModule');
+
+var EventEmitter = require('EventEmitter');
+var test = require('Subscribable');
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+var secret = require('./secret');
+
+
 var roomfinder = React.createClass({
+  mixins: [test.Mixin],
+
+  componentWillMount: function() {
+    this.addListenerOn(RCTDeviceEventEmitter,
+                      'login',
+                      this.scrollResponderKeyboardWillShow);
+  },
+
+  scrollResponderKeyboardWillShow:function(e: Event) {
+      console.log('------------------>' + JSON.stringify(e));
+  },
+
   render: function() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Shake or press menu button for dev menu
-        </Text>
-      </View>
-    );
-  }
+            <TouchableWithoutFeedback
+              onPress={() =>
+                LoginModule.login(
+                  secret.google.client_id, 
+                  (successCallback) => {
+                    console.log(successCallback);
+                  })
+                }>
+              <Text style={styles.text}>Click me to LogIn.</Text>
+            </TouchableWithoutFeedback>
+        );
+  },
 });
 
 var styles = StyleSheet.create({
@@ -46,6 +66,9 @@ var styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
+  },
+  text: {
+    color: 'black',
   },
 });
 
