@@ -13,9 +13,11 @@ var {
   Modal,
   TouchableHighlight,
   WebView,
+  ListView,
 } = React;
 var urlParser = require('./urlParser');
 var secret = require('./secret');
+var mockData = require('./mockData');
 
 var Button = React.createClass({
   getInitialState() {
@@ -49,11 +51,17 @@ var Button = React.createClass({
   }
 });
 
+
 var roomfinder = React.createClass({
   getInitialState() {
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     return {
       modalVisible: false,
-      url: 'https://accounts.google.com/o/oauth2/auth?client_id=' + secret.google.client_id + '&redirect_uri=http%3A%2F%2Flocalhost&response_type=code&scope=email%20openid%20profile',
+      url: 'https://accounts.google.com/o/oauth2/auth?client_id=' + secret.google.client_id + '&redirect_uri=http%3A%2F%2Flocalhost&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&approval_prompt=force&access_type=offline',
+      // dataSource: ds.cloneWithRows([{summary:"calendar0"},{summary:"calendar1"}]),
+      // dataSource: ds.cloneWithRows(mockData),
+      // dataSource: ds.cloneWithRows(mockData.slice(15)),
+      dataSource: ds.cloneWithRows([])
     };
   },
 
@@ -61,48 +69,74 @@ var roomfinder = React.createClass({
     this.setState({modalVisible: visible});
   },
   
-  onNavigationStateChange(navState) {
-    // alert(JSON.stringify(URLL.parse(navState.url)));
-    // alert(navState.url);
-    
+  onNavigationStateChange(navState) {   
+    var that = this;
     var parsed_url = urlParser.parse(navState.url);
     
     if (parsed_url.path === 'http://localhost/') {
       // ganamos!
-      this.setState({
+      that.setState({
         modalVisible: false,        
       });
+      
+      // https://developers.google.com/web/updates/2015/03/introduction-to-fetch?hl=en#post-request
+      // https://developers.google.com/oauthplayground/
+      // https://developers.google.com/identity/protocols/OAuth2WebServer?hl=en#creatingcred
+      var body =           
+        "code=" + parsed_url.params.code +
+        "&client_id=" + secret.google.client_id + 
+        "&client_secret=" + secret.google.client_secret +
+        "&redirect_uri=" + "http://localhost" +
+        "&grant_type=" + "authorization_code";
+      
+      fetch('https://www.googleapis.com/oauth2/v3/token', {  
+        method: 'post',  
+        headers: {  
+          "Content-type" : "application/x-www-form-urlencoded",
+          // "code" : parsed_url.params.code,
+          // "client_id" : secret.google.client_id,
+          // "client_secret" : secret.google.client_secret,
+          // "redirect_uri": "http://localhost/",
+          // "grant_type" : "authorization_code",
+        },
+        body:body
+      })
+      .then(function(response) {
+        // Ganamos
+        if (response.status == 200) {
+          return response.json();
+        }
+      })  
+      .then(function(data) {  
+        console.log('Request succeeded with JSON response', data);  
+        var calendarsURL = "https://www.googleapis.com/calendar/v3/users/me/calendarList"
+        return fetch(calendarsURL, {
+          method: 'get',  
+          headers: {  
+            'Authorization': 'Bearer ' + data.access_token
+          }                    
+        });
+      })  
+      .then(function(response) {
+        // Ganamos
+        if (response.status == 200) {
+          return response.json();
+        }
+      })  
+      .then(function(data) {  
+        console.log('Request succeeded with JSON response', data);  
+        that.setState({
+          dataSource: that.state.dataSource.cloneWithRows(mockData),
+        });
+      })
+      .catch(function(error) {  
+        console.log('Request failed', error);  
+      })
+      .done();
     }
-    
-    // return false;
-    // this.setState({
-    //   backButtonEnabled: navState.canGoBack,
-    //   forwardButtonEnabled: navState.canGoForward,
-    //   url: navState.url,
-    //   status: navState.title,
-    //   loading: navState.loading,
-    //   scalesPageToFit: true
-    // });
   },
   
-  // onLoadingError() {
-  //   alert("renderError");
-
-  //   return false;
-  // },
-  
-  renderError() {
-    return (<View/>);
-  },
-
   render() {
-    var modalBackgroundStyle = {
-      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
-    };
-    var innerContainerTransparentStyle = this.state.transparent
-      ? {backgroundColor: '#fff', padding: 20}
-      : null;
-
     return (
       <View>
         <Modal
@@ -128,6 +162,20 @@ var roomfinder = React.createClass({
         <Button onPress={this._setModalVisible.bind(this, true)}>
           Present
         </Button>
+        
+        <ListView
+          ref="listView"
+          style={styles.container}
+          initialListSize={100}
+          dataSource={this.state.dataSource}
+          automaticallyAdjustContentInsets={false}
+          keyboardShouldPersistTaps={true}
+          showsVerticalScrollIndicator={false}
+          renderRow={(rowData) => 
+            <Text style={styles.row}>{rowData.summary}</Text>
+          }
+        />
+        
       </View>
     );
   },
@@ -139,21 +187,15 @@ var BGWASH = 'rgba(255,255,255,0.8)';
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
   },
-  innerContainer: {
-    borderRadius: 10,
-  },
-  row: {
+  centerText: {
     alignItems: 'center',
-    flex: 1,
-    flexDirection: 'row',
-    marginBottom: 20,
   },
-  rowTitle: {
-    flex: 1,
-    fontWeight: 'bold',
+  row : {
+    backgroundColor: '#EFEFEF',
+    height: 50,
+    margin: 3,
   },
   button: {
     borderRadius: 5,
@@ -167,54 +209,11 @@ var styles = StyleSheet.create({
     margin: 5,
     textAlign: 'center',
   },
-  modalButton: {
-    marginTop: 10,
-  },  
   webView: {
     backgroundColor: BGWASH,
     height: 350,
   },
 });
 
-
-/*
-var roomfinder = React.createClass({
-  render: function() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-      </View>
-    );
-  }
-});
-
-var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
-*/
 
 AppRegistry.registerComponent('roomfinder', () => roomfinder);
