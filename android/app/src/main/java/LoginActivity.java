@@ -49,7 +49,7 @@ public class LoginActivity extends Activity {
 				Log.i("TAG", "Finished loading URL: " + url);
 			}
 		});
-		webview.loadUrl("https://accounts.google.com/o/oauth2/auth?client_id=" + mGoogleClientId + "&redirect_uri=http%3A%2F%2Flocalhost&response_type=code&scope=email%20openid%20profile");
+		webview.loadUrl("https://accounts.google.com/o/oauth2/auth?client_id=" + mGoogleClientId + "&redirect_uri=http%3A%2F%2Flocalhost&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&approval_prompt=force&access_type=offline");
 	}
 
 	private void notifyLogin(Map<String, String> result) {
