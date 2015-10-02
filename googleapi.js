@@ -1,5 +1,7 @@
 'use strict';
 
+var _ = require('underscore');
+
 var GoogleAPI = function() {}
 
 GoogleAPI.prototype = {
@@ -46,8 +48,27 @@ GoogleAPI.prototype = {
     .then(function(response) {
       return response.json();
     });
+  },
+
+  resourcesList : function() {
+    return this.calendarList()
+    .then(function(data) {
+      return _.filter(data.items, (item) => item.id.endsWith('@resource.calendar.google.com'));
+      });
+  },
+
+  insertEvent: function() {
+    return 1;
+  },
+
+  deleteEvent: function() {
+    return 1;
+  },
+
+  freeBusy: function() {
+    return 1;
   }
-  
+
 }
 
 module.exports = new GoogleAPI();

@@ -19,7 +19,8 @@ var EventEmitter = require('EventEmitter');
 var test = require('Subscribable');
 var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 var secret = require('./secret');
-
+var googleapi = require('./googleapi');
+var _ = require('underscore');
 
 var roomfinder = React.createClass({
   mixins: [test.Mixin],
@@ -31,7 +32,34 @@ var roomfinder = React.createClass({
   },
 
   scrollResponderKeyboardWillShow:function(e: Event) {
-      console.log('------------------>' + JSON.stringify(e));
+      console.log('------------------>' + JSON.stringify(e) + ' - code: ' + e.code);
+      var code = e.code;
+      var clientId = secret.google.client_id;
+      var clientSecret = secret.google.client_secret;
+      
+      googleapi.init(code, clientId, clientSecret);
+
+      googleapi.authenticate()
+      .then(function() {
+            console.log('----> resourcesList');
+              return googleapi.resourcesList()
+            })
+      .then(function(items) {
+        var filter = _.filter(data.items, (item) => item.id.endsWith('@resource.calendar.google.com'));
+
+        console.log(items);
+        // console.log('nextPageToken:' + data.nextPageToken); 
+        // console.log('kind:' + data.kind); 
+        // console.log('data.items.length:' + data.items.length); 
+        // for (var i = 0 ; i < data.items.length ; i++) {
+        //   var item = data.items[i];
+        //   if (item.id.endsWith('@resource.calendar.google.com')) {
+        //     console.log(item.summary);
+        //   }
+        // }
+        // console.log(data); 
+      });
+
   },
 
   render: function() {
@@ -41,7 +69,7 @@ var roomfinder = React.createClass({
                 LoginModule.login(
                   secret.google.client_id, 
                   (successCallback) => {
-                    console.log(successCallback);
+                    console.log(successCallback.code);
                   })
                 }>
               <Text style={styles.text}>Click me to LogIn.</Text>
