@@ -15,9 +15,12 @@ var {
   WebView,
   ListView,
 } = React;
-var urlParser = require('./urlParser');
+
+var urlParser = require('./urlparser');
 var secret = require('./secret');
 var mockData = require('./mockData');
+var googleapi = require('./googleapi');
+
 
 var Button = React.createClass({
   getInitialState() {
@@ -79,60 +82,19 @@ var roomfinder = React.createClass({
         modalVisible: false,        
       });
       
-      // https://developers.google.com/web/updates/2015/03/introduction-to-fetch?hl=en#post-request
-      // https://developers.google.com/oauthplayground/
-      // https://developers.google.com/identity/protocols/OAuth2WebServer?hl=en#creatingcred
-      var body =           
-        "code=" + parsed_url.params.code +
-        "&client_id=" + secret.google.client_id + 
-        "&client_secret=" + secret.google.client_secret +
-        "&redirect_uri=" + "http://localhost" +
-        "&grant_type=" + "authorization_code";
-      
-      fetch('https://www.googleapis.com/oauth2/v3/token', {  
-        method: 'post',  
-        headers: {  
-          "Content-type" : "application/x-www-form-urlencoded",
-          // "code" : parsed_url.params.code,
-          // "client_id" : secret.google.client_id,
-          // "client_secret" : secret.google.client_secret,
-          // "redirect_uri": "http://localhost/",
-          // "grant_type" : "authorization_code",
-        },
-        body:body
-      })
-      .then(function(response) {
-        // Ganamos
-        if (response.status == 200) {
-          return response.json();
-        }
-      })  
-      .then(function(data) {  
-        console.log('Request succeeded with JSON response', data);  
-        var calendarsURL = "https://www.googleapis.com/calendar/v3/users/me/calendarList"
-        return fetch(calendarsURL, {
-          method: 'get',  
-          headers: {  
-            'Authorization': 'Bearer ' + data.access_token
-          }                    
-        });
-      })  
-      .then(function(response) {
-        // Ganamos
-        if (response.status == 200) {
-          return response.json();
-        }
-      })  
-      .then(function(data) {  
+      googleapi.init(
+        parsed_url.params.code,
+        secret.google.client_id,
+        secret.google.client_secret
+      );
+      googleapi.authenticate();
+      googleapi.calendarList().then(function(data){
         console.log('Request succeeded with JSON response', data);  
         that.setState({
           dataSource: that.state.dataSource.cloneWithRows(mockData),
         });
-      })
-      .catch(function(error) {  
-        console.log('Request failed', error);  
-      })
-      .done();
+      });
+
     }
   },
   
