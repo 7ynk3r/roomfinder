@@ -37,15 +37,25 @@ GoogleAPI.prototype = {
       that.authorization = 'Bearer ' + data.access_token;
     });
   },
-  
-  calendarList : function() {
-    console.log("calendarList");
-    return fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
-      method: 'get',  
+
+  callApi: function(url, methodName, body) {
+    var bodyParams = body ? JSON.stringify(body) : null;
+
+    console.log('--------------> calling API [' + methodName + ']' + url + ' with body: ' + bodyParams);
+
+    return fetch(url, {
+      method: methodName,  
       headers: {  
-        'Authorization': this.authorization
-      }                    
-    })  
+        'Authorization': this.authorization,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: bodyParams
+    });
+  },
+
+  calendarList : function() {
+    return this.callApi("https://www.googleapis.com/calendar/v3/users/me/calendarList", 'get')  
     .then(function(response) {
       return response.json();
     });
@@ -61,27 +71,27 @@ GoogleAPI.prototype = {
     });
   },
   
-  freeBusyQuery: function(timeMin, timeMax, items) {
-    console.log("freeBusyQuery");
+  // freeBusyQuery: function(timeMin, timeMax, items) {
+  //   console.log("freeBusyQuery");
     
-    var body = JSON.stringify({
-      "timeMin": timeMin, //"2015-10-09T01:00:00Z",
-      "timeMax": timeMax, //"2015-10-09T23:00:00Z"
-      "items": items // [{ 'id' : 'davidv@medallia.com' }]
-    });
+  //   var body = JSON.stringify({
+  //     "timeMin": timeMin, //"2015-10-09T01:00:00Z",
+  //     "timeMax": timeMax, //"2015-10-09T23:00:00Z"
+  //     "items": items // [{ 'id' : 'davidv@medallia.com' }]
+  //   });
     
-    return fetch('https://www.googleapis.com/calendar/v3/freeBusy', {
-      method: 'post',  
-      headers: {
-        'Authorization': this.authorization,
-        'Content-Type': 'application/json'
-      },
-      body : body
-    })  
-    .then(function(response) {
-      return response.json();
-    });
-  },
+  //   return fetch('https://www.googleapis.com/calendar/v3/freeBusy', {
+  //     method: 'post',  
+  //     headers: {
+  //       'Authorization': this.authorization,
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body : body
+  //   })  
+  //   .then(function(response) {
+  //     return response.json();
+  //   });
+  // },
 
   freeSlotList : function(timeMin, timeMax, stepSize, slotSize, slotsMax) {
     console.log("freeSlotList");
@@ -92,9 +102,7 @@ GoogleAPI.prototype = {
     .resourcesList()
     .then(function(rs) {
       console.log("freeSlotList rs " + rs)
-      return _.map(rs, function(r) {
-        return {'id' : r.id};
-      });
+      return _.map(rs, (r) => r.id);
     })
     .then(function(items) {
       console.log("freeSlotList items " + items)
@@ -160,12 +168,29 @@ GoogleAPI.prototype = {
     return available; 
   },
 
-  insertEvent: function() {
-    return 1;
+  insertEvent: function(calendarId, summary, start, end) {
+    var params = {};
+    params['start'] = {'dateTime': start};
+    params['end'] = {'dateTime': end};
+    params['attendees'] = [{'email': calendarId}];
+    params['summary'] = summary;
+    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events', 'post', params);
   },
 
-  deleteEvent: function() {
-    return 1;
+  deleteEvent: function(calendarId, eventId) {
+    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/' + calendarId + '/events/' + eventId, 'delete');
+  },
+
+  freeBusyQuery: function(start, end, calendarIds) {
+    var calendars = [];
+    _.each(calendarIds, (calendarId) => calendars.push({'id' : calendarId}));
+
+    var params = {};
+    // params['kind'] = 'calendar#freeBusy';
+    params['timeMin'] = start;
+    params['timeMax'] = end;
+    params['items'] = calendars;
+    return this.callApi('https://www.googleapis.com/calendar/v3/freeBusy', 'post', params);
   }
 }
 
