@@ -1,7 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
 'use strict';
 
 var React = require('react-native');
@@ -16,118 +12,88 @@ var {
   ListView,
 } = React;
 
-var urlParser = require('./urlparser');
+var TimerMixin = require('react-timer-mixin');
+
 var secret = require('./secret');
-var mockData = require('./mockData');
+// var mockData = require('./mockData');
 var googleapi = require('./googleapi');
 
-
-var Button = React.createClass({
-  getInitialState() {
-    return {
-      active: false,
-    };
-  },
-
-  _onHighlight() {
-    this.setState({active: true});
-  },
-
-  _onUnhighlight() {
-    this.setState({active: false});
-  },
-
-  render() {
-    var colorStyle = {
-      color: this.state.active ? '#fff' : '#000',
-    };
-    return (
-      <TouchableHighlight
-        onHideUnderlay={this._onUnhighlight}
-        onPress={this.props.onPress}
-        onShowUnderlay={this._onHighlight}
-        style={[styles.button, this.props.style]}
-        underlayColor='#a9d9d4'>
-          <Text style={[styles.buttonText, colorStyle]}>{this.props.children}</Text>
-      </TouchableHighlight>
-    );
-  }
-});
-
+var GoogleAPIForm = require('./googleapi.form');
 
 var roomfinder = React.createClass({
+  mixins: [TimerMixin],
+  
   getInitialState() {
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     return {
       modalVisible: false,
-      url: 'https://accounts.google.com/o/oauth2/auth?client_id=' + secret.google.client_id + '&redirect_uri=http%3A%2F%2Flocalhost&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&approval_prompt=force&access_type=offline',
-      // dataSource: ds.cloneWithRows([{summary:"calendar0"},{summary:"calendar1"}]),
-      // dataSource: ds.cloneWithRows(mockData),
-      // dataSource: ds.cloneWithRows(mockData.slice(15)),
       dataSource: ds.cloneWithRows([])
     };
+  },
+  
+  componentDidMount: function() {
+    this.setTimeout(
+      () => {
+        console.log("timeout!!!!");
+        this.setState({
+          modalVisible: true,
+        });
+      }, 
+      500
+    );
   },
 
   _setModalVisible(visible) {
     this.setState({modalVisible: visible});
   },
   
-  onNavigationStateChange(navState) {   
+  _onCode(code) {   
     var that = this;
-    var parsed_url = urlParser.parse(navState.url);
-    
-    if (parsed_url.path === 'http://localhost/') {
-      // ganamos!
-      that.setState({
-        modalVisible: false,        
-      });
-      
-      googleapi.init(
-        parsed_url.params.code,
-        secret.google.client_id,
-        secret.google.client_secret
-      );
-      googleapi.authenticate();
-      googleapi.calendarList().then(function(data){
-        console.log('Request succeeded with JSON response', data);  
-        that.setState({
-          dataSource: that.state.dataSource.cloneWithRows(mockData),
-        });
-      });
 
-    }
+    that.setState({
+      modalVisible: false,        
+    });
+    
+    googleapi.init(
+      code,
+      secret.google.client_id,
+      secret.google.client_secret
+    );
+    
+    googleapi
+    .authenticate()
+    .then(function(){
+      return googleapi.calendarList();    
+    })
+    .then(function(data){
+      console.log('Request succeeded with JSON response', data);  
+      that.setTimeout(
+        () => {
+          that.setState({
+            dataSource: that.state.dataSource.cloneWithRows(data.items),
+          });
+        }, 
+        0
+      );
+    });
   },
   
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <Modal
           animated={true}
           transparent={false}
           visible={this.state.modalVisible}>
 
-          <WebView
-            ref={this.state.url}
-            automaticallyAdjustContentInsets={false}
-            style={styles.webView}
-            url={this.state.url}
-            javaScriptEnabledAndroid={true}
-            onNavigationStateChange={this.onNavigationStateChange}
-            onLoadingError={this.onLoadingError}
-            renderError={this.renderError}
-            startInLoadingState={true}
-            scalesPageToFit={true}/>
+          <GoogleAPIForm
+            client_id={secret.google.client_id}
+            onCode={this._onCode}/>
             
         </Modal>
-
-
-        <Button onPress={this._setModalVisible.bind(this, true)}>
-          Present
-        </Button>
         
         <ListView
           ref="listView"
-          style={styles.container}
           initialListSize={100}
           dataSource={this.state.dataSource}
           automaticallyAdjustContentInsets={false}
@@ -137,7 +103,6 @@ var roomfinder = React.createClass({
             <Text style={styles.row}>{rowData.summary}</Text>
           }
         />
-        
       </View>
     );
   },
@@ -151,29 +116,10 @@ var styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-  centerText: {
-    alignItems: 'center',
-  },
   row : {
     backgroundColor: '#EFEFEF',
     height: 50,
     margin: 3,
-  },
-  button: {
-    borderRadius: 5,
-    flex: 1,
-    height: 44,
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  buttonText: {
-    fontSize: 18,
-    margin: 5,
-    textAlign: 'center',
-  },
-  webView: {
-    backgroundColor: BGWASH,
-    height: 350,
   },
 });
 

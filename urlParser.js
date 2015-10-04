@@ -1,10 +1,11 @@
 var _ = require('underscore');
 module.exports = {
   parse(s) {
+    var ssplit = s.split("?");
     return {
       url : s,
-      path : s.split("?")[0],
-      params : _.object(s.split("?")[1].split('&').map(p => p.split('=')))
+      path : ssplit[0],
+      params : ssplit.length < 2 ? {} : _.object(ssplit[1].split('&').map(p => p.split('=')))
     }
   }    
 }
