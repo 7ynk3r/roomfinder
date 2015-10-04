@@ -1,5 +1,11 @@
 'use strict';
 
+// Non-components
+var secret = require('./secret');
+var mockData = require('./mockData');
+var googleapi = require('./googleapi');
+
+// Components 
 var React = require('react-native');
 var {
   AppRegistry,
@@ -11,14 +17,8 @@ var {
   WebView,
   ListView,
 } = React;
-
-var TimerMixin = require('react-timer-mixin');
-
-var secret = require('./secret');
-// var mockData = require('./mockData');
-var googleapi = require('./googleapi');
-
 var GoogleAPIForm = require('./googleapi.form');
+var TimerMixin = require('react-timer-mixin');
 
 var roomfinder = React.createClass({
   mixins: [TimerMixin],
@@ -27,20 +27,17 @@ var roomfinder = React.createClass({
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     return {
       modalVisible: false,
-      dataSource: ds.cloneWithRows([])
+      dataSource: ds.cloneWithRows([]),
     };
   },
   
   componentDidMount: function() {
-    this.setTimeout(
-      () => {
-        console.log("timeout!!!!");
-        this.setState({
-          modalVisible: true,
-        });
-      }, 
-      500
-    );
+    this.setState({
+      modalVisible: true,
+    });
+    // this.setState({
+    //   dataSource: this.state.dataSource.cloneWithRows(mockData),
+    // });    
   },
 
   _setModalVisible(visible) {
@@ -63,24 +60,44 @@ var roomfinder = React.createClass({
     googleapi
     .authenticate()
     .then(function(){
-      return googleapi.calendarList();    
+      var timeMin = new Date(2015, 9, 9,  1, 0, 0, 0);
+      var timeMax = new Date(2015, 9, 9, 23, 0, 0, 0);
+      return googleapi.freeSlotList(timeMin, timeMax, 30, 60, 2);
     })
     .then(function(data){
-      console.log('Request succeeded with JSON response', data);  
-      that.setTimeout(
-        () => {
-          that.setState({
-            dataSource: that.state.dataSource.cloneWithRows(data.items),
-          });
-        }, 
-        0
-      );
+      console.log('Request succeeded with JSON response', data);
+      that.setState({
+        dataSource: that.state.dataSource.cloneWithRows(data),
+      });
     });
+
+    
+    // .then(function(){
+    //   return googleapi.resourcesList();    
+    // })
+    // .then(function(data){
+    //   console.log('Request succeeded with JSON response', data);  
+    //   that.setState({
+    //     dataSource: that.state.dataSource.cloneWithRows(data),
+    //   });
+    // });
+    
+    // .then(function(){
+    //   return googleapi.calendarList();    
+    // })
+    // .then(function(data){
+    //   console.log('Request succeeded with JSON response', data);  
+    //   that.setState({
+    //     dataSource: that.state.dataSource.cloneWithRows(data.items),
+    //   });
+    // });
   },
   
   render() {
     return (
-      <View style={styles.container}>
+      <View 
+        style={styles.container}>
+      
         <Modal
           animated={true}
           transparent={false}
@@ -94,32 +111,34 @@ var roomfinder = React.createClass({
         
         <ListView
           ref="listView"
-          initialListSize={100}
+          initialListSize={50}
           dataSource={this.state.dataSource}
           automaticallyAdjustContentInsets={false}
           keyboardShouldPersistTaps={true}
           showsVerticalScrollIndicator={false}
           renderRow={(rowData) => 
-            <Text style={styles.row}>{rowData.summary}</Text>
-          }
-        />
+            <Text style={[styles.row, {
+              backgroundColor: rowData.backgroundColor,
+              color: rowData.foregroundColor
+            }]}>
+              {rowData.summary}
+            </Text>
+          }/>
+          
       </View>
     );
   },
 });
 
-
-var BGWASH = 'rgba(255,255,255,0.8)';
-
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    marginTop: 20,
   },
   row : {
-    backgroundColor: '#EFEFEF',
-    height: 50,
+    padding: 10,
     margin: 3,
+    borderRadius: 3, 
   },
 });
 
