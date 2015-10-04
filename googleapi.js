@@ -35,16 +35,29 @@ GoogleAPI.prototype = {
       console.log('Request succeeded with JSON response', JSON.stringify(data));  
       that.access_token = data.access_token;
       that.authorization = 'Bearer ' + data.access_token;
+      //TODO: complete this field somehow.
+      that.userEmail = 'COMPLETE_HERE';
     });
   },
-  
-  calendarList : function() {
-    return fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
-      method: 'get',  
+
+  callApi: function(url, methodName, body) {
+    var bodyParams = body ? JSON.stringify(body) : null;
+
+    console.log('--------------> calling API [' + methodName + ']' + url + ' with body: ' + bodyParams);
+
+    return fetch(url, {
+      method: methodName,  
       headers: {  
-        'Authorization': this.authorization
-      }                    
-    })  
+        'Authorization': this.authorization,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: bodyParams
+    });
+  },
+
+  calendarList : function() {
+    return this.callApi("https://www.googleapis.com/calendar/v3/users/me/calendarList", 'get')  
     .then(function(response) {
       return response.json();
     });
@@ -57,16 +70,29 @@ GoogleAPI.prototype = {
       });
   },
 
-  insertEvent: function() {
-    return 1;
+  insertEvent: function(calendarId, summary, start, end) {
+    var params = {};
+    params['start'] = {'dateTime': start};
+    params['end'] = {'dateTime': end};
+    params['attendees'] = [{'email': calendarId}];
+    params['summary'] = summary;
+    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/' + userEmail + '/events', 'post', params);
   },
 
-  deleteEvent: function() {
-    return 1;
+  deleteEvent: function(calendarId, eventId) {
+    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/' + calendarId + '/events/' + eventId, 'delete');
   },
 
-  freeBusy: function() {
-    return 1;
+  freeBusy: function(calendarIds, start, end) {
+    var calendars = [];
+    _.each(calendarIds, (calendarId) => calendars.push({'id' : calendarId}));
+
+    var params = {};
+    params['kind'] = 'calendar#freeBusy';
+    params['timeMin'] = start;
+    params['timeMax'] = end;
+    params['items'] = calendars;
+    return this.callApi('https://www.googleapis.com/calendar/v3/freeBusy', 'post', params);
   }
 
 }
