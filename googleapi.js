@@ -35,8 +35,6 @@ GoogleAPI.prototype = {
       console.log('Request succeeded with JSON response', JSON.stringify(data));  
       that.access_token = data.access_token;
       that.authorization = 'Bearer ' + data.access_token;
-      //TODO: complete this field somehow.
-      that.userEmail = 'COMPLETE_HERE';
     });
   },
 
@@ -76,7 +74,7 @@ GoogleAPI.prototype = {
     params['end'] = {'dateTime': end};
     params['attendees'] = [{'email': calendarId}];
     params['summary'] = summary;
-    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/' + userEmail + '/events', 'post', params);
+    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events', 'post', params);
   },
 
   deleteEvent: function(calendarId, eventId) {
