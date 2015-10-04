@@ -118,7 +118,6 @@ var roomfinder = React.createClass({
           showsVerticalScrollIndicator={false}
           renderRow={(rowData) => 
             <Text style={[styles.row, {
-              backgroundColor: rowData.backgroundColor,
               color: rowData.foregroundColor
             }]}>
               {rowData.summary}

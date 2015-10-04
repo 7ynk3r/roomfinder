@@ -51,14 +51,14 @@ GoogleAPI.prototype = {
         'Content-Type': 'application/json'
       },
       body: bodyParams
+    })
+    .then(function(response) {  
+      return response.json();
     });
   },
 
   calendarList : function() {
-    return this.callApi("https://www.googleapis.com/calendar/v3/users/me/calendarList", 'get')  
-    .then(function(response) {
-      return response.json();
-    });
+    return this.callApi("https://www.googleapis.com/calendar/v3/users/me/calendarList", 'get');
   },
 
   resourcesList : function() {
