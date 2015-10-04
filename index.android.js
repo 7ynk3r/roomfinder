@@ -1,7 +1,3 @@
-/**
- * Sample React Native App: david
- * https://github.com/facebook/react-native
- */
 'use strict';
 
 var React = require('react-native');
@@ -10,94 +6,129 @@ var {
   StyleSheet,
   Text,
   View,
-  TouchableWithoutFeedback
+  Modal,
+  TouchableHighlight,
+  WebView,
+  ListView,
 } = React;
 
-var LoginModule = require('LoginModule');
+// var TimerMixin = require('react-timer-mixin');
 
-var EventEmitter = require('EventEmitter');
-var test = require('Subscribable');
-var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 var secret = require('./secret');
+// var mockData = require('./mockData');
 var googleapi = require('./googleapi');
-var _ = require('underscore');
+
+var GoogleAPIForm = require('./googleapi.form');
 
 var roomfinder = React.createClass({
-  mixins: [test.Mixin],
-
-  componentWillMount: function() {
-    this.addListenerOn(RCTDeviceEventEmitter,
-                      'login',
-                      this.scrollResponderKeyboardWillShow);
+  // mixins: [TimerMixin],
+  
+  getInitialState() {
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    return {
+      modalVisible: false,
+      dataSource: ds.cloneWithRows([])
+    };
+  },
+  
+  componentDidMount: function() {
+    // this.setTimeout(
+    //   () => {
+        // console.log("timeout!!!!");
+        this.setState({
+          modalVisible: true,
+        });
+    //   }, 
+    //   500
+    // );
   },
 
-  scrollResponderKeyboardWillShow:function(e: Event) {
-      console.log('------------------>' + JSON.stringify(e) + ' - code: ' + e.code);
-      var code = e.code;
-      var clientId = secret.google.client_id;
-      var clientSecret = secret.google.client_secret;
-      
-      googleapi.init(code, clientId, clientSecret);
-
-      googleapi.authenticate()
-      .then(function() {
-            console.log('----> resourcesList');
-              return googleapi.resourcesList()
-            })
-      .then(function(items) {
-        var filter = _.filter(data.items, (item) => item.id.endsWith('@resource.calendar.google.com'));
-
-        console.log(items);
-        // console.log('nextPageToken:' + data.nextPageToken); 
-        // console.log('kind:' + data.kind); 
-        // console.log('data.items.length:' + data.items.length); 
-        // for (var i = 0 ; i < data.items.length ; i++) {
-        //   var item = data.items[i];
-        //   if (item.id.endsWith('@resource.calendar.google.com')) {
-        //     console.log(item.summary);
-        //   }
-        // }
-        // console.log(data); 
-      });
-
+  _setModalVisible(visible) {
+    this.setState({modalVisible: visible});
   },
+  
+  _onCode(code) {   
+    var that = this;
 
-  render: function() {
+    console.log('-------> on Code');
+
+    that.setState({
+      modalVisible: false,        
+    });
+    
+
+    console.log('-------> on Code' + code + ' clientId: ' + secret.google.client_id + ' client_secret: ' + secret.google.client_secret);
+
+    googleapi.init(
+      code,
+      secret.google.client_id,
+      secret.google.client_secret
+    );
+
+    console.log('-------> on Code before authenticate' );
+
+    googleapi
+    .authenticate()
+    .then(function(){
+      console.log('------->  authenticate DONE!' );
+      return googleapi.calendarList();    
+    })
+    .then(function(data){
+      console.log('Request succeeded with JSON response', data);  
+
+      // that.setTimeout(
+      //   () => {
+          that.setState({
+            dataSource: that.state.dataSource.cloneWithRows(data.items),
+          });
+      //   }, 
+      //   0
+      // );
+    });
+  },
+  
+  render() {
     return (
-            <TouchableWithoutFeedback
-              onPress={() =>
-                LoginModule.login(
-                  secret.google.client_id, 
-                  (successCallback) => {
-                    console.log(successCallback.code);
-                  })
-                }>
-              <Text style={styles.text}>Click me to LogIn.</Text>
-            </TouchableWithoutFeedback>
-        );
+      <View style={styles.container}>
+        <Modal
+          animated={true}
+          transparent={false}
+          visible={this.state.modalVisible}>
+
+          <GoogleAPIForm
+            client_id={secret.google.client_id}
+            onCode={this._onCode}/>
+            
+        </Modal>
+
+        <ListView
+          ref="listView"
+          initialListSize={100}
+          dataSource={this.state.dataSource}
+          automaticallyAdjustContentInsets={false}
+          keyboardShouldPersistTaps={true}
+          showsVerticalScrollIndicator={false}
+          renderRow={(rowData) => 
+            <Text style={styles.row}>{rowData.summary}</Text>
+          }
+        />
+      </View>
+    );
   },
 });
+
 
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    padding: 20,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  text: {
-    color: 'black',
+  row : {
+    backgroundColor: '#EFEFEF',
+    height: 50,
+    margin: 3,
   },
 });
+
 
 AppRegistry.registerComponent('roomfinder', () => roomfinder);
