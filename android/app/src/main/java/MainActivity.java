@@ -35,8 +35,8 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
     mReactInstanceManager = ReactInstanceManager.builder()
         .setApplication(getApplication())
-        .setBundleAssetName("index.android.bundle")
-        .setJSMainModuleName("index.android")
+        .setBundleAssetName("index.bundle")
+        .setJSMainModuleName("index")
 
         .addPackage(new MainReactPackage())
         .addPackage(new com.facebook.react.uiapp.RoomFinderReactPackage())

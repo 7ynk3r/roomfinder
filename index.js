@@ -59,19 +59,18 @@ var roomfinder = React.createClass({
     
     googleapi
     .authenticate()
-    .then(function(){
-      var timeMin = new Date(2015, 9, 9,  1, 0, 0, 0);
-      var timeMax = new Date(2015, 9, 9, 23, 0, 0, 0);
-      return googleapi.freeSlotList(timeMin, timeMax, 30, 60, 2);
-    })
-    .then(function(data){
-      console.log('Request succeeded with JSON response', data);
-      that.setState({
-        dataSource: that.state.dataSource.cloneWithRows(data),
-      });
-    });
-
-    
+    // .then(function(){
+    //   var timeMin = new Date(2015, 9, 9,  1, 0, 0, 0);
+    //   var timeMax = new Date(2015, 9, 9, 23, 0, 0, 0);
+    //   return googleapi.freeSlotList(timeMin, timeMax, 30, 60, 2);
+    // })
+    // .then(function(data){
+    //   console.log('Request succeeded with JSON response', data);
+    //   that.setState({
+    //     dataSource: that.state.dataSource.cloneWithRows(data),
+    //   });
+    // });
+   
     // .then(function(){
     //   return googleapi.resourcesList();    
     // })
@@ -82,15 +81,15 @@ var roomfinder = React.createClass({
     //   });
     // });
     
-    // .then(function(){
-    //   return googleapi.calendarList();    
-    // })
-    // .then(function(data){
-    //   console.log('Request succeeded with JSON response', data);  
-    //   that.setState({
-    //     dataSource: that.state.dataSource.cloneWithRows(data.items),
-    //   });
-    // });
+    .then(function(){
+      return googleapi.calendarList();    
+    })
+    .then(function(data){
+      console.log('Request succeeded with JSON response', data);  
+      that.setState({
+        dataSource: that.state.dataSource.cloneWithRows(data.items),
+      });
+    });
   },
   
   render() {
@@ -118,7 +117,8 @@ var roomfinder = React.createClass({
           showsVerticalScrollIndicator={false}
           renderRow={(rowData) => 
             <Text style={[styles.row, {
-              color: rowData.foregroundColor
+              color: rowData.foregroundColor,
+              backgroundColor : rowData.backgroundColor
             }]}>
               {rowData.summary}
             </Text>
