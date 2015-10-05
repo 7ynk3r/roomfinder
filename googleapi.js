@@ -164,7 +164,7 @@ GoogleAPI.prototype = {
               });
               slots.calendars[resourceEmail]['taken'] = takenSlots;
 
-              // Adds the resource in case it is not included into the resources list yet.
+              // Adds the resource if it is not included into the resources list yet.
               if (!_.find(resources, (rs) => rs.id == resourceEmail)) {
                 resources.push({
                   id: resourceEmail,
