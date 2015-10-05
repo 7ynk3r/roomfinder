@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('underscore');
-
 var GoogleAPI = function() {}
 
 GoogleAPI.prototype = {
@@ -125,12 +124,12 @@ GoogleAPI.prototype = {
       var timeMax = slots.timeMax;
       var calendars = slots.calendars;
       
-      for(var calendarKey in calendars) {
-        calendars[calendarKey] = {
+      for(var calendarId in calendars) {
+        calendars[calendarId] = {
           available : that.freeSlotListForCalendar(
             slots.timeMin,
             slots.timeMax,
-            calendars[calendarKey].busy,
+            calendars[calendarId].busy,
             stepSize,
             slotSize,
             slotsMax)
@@ -185,28 +184,33 @@ GoogleAPI.prototype = {
   
   
   groupedFreeSlotList : function(timeMin, timeMax, stepSize, slotSize, slotsMax) {
+    
     return this
     .freeSlotList(timeMin, timeMax, stepSize, slotSize, slotsMax)
-    .then(function(slots) {
-      var calendars = slots.calendars;
-      var groupedSlots = {};
-      
-      _.each(calendars, (calendarKey, calendar) => {
-        _.each(calendar.available, (slot) => {
-          var time = slot.start.getTime();
-          // Init a group for the specific time.
-          if (!groupedSlots[time]) {
-            groupedSlots[time] = [];
-          }
+    .then(function(freeBusy) {
+      var slots = freeBusy.slots;
+      var calendarsSlots = slots.calendars;      
+      var indexedSlots = {};
+      _.each(calendarsSlots, (calendarSlots, calendarId) => {
+        _.each(calendarSlots.available, (slot) => {
+          // Add the time as the id.
+          var slotId = slot.start.getTime();
+          var gslot = indexedSlots[slotId];
           // Push the slot
-          slot.summary = calendarKey;
-          groupedSlots[time].push(slot);
+          if (!gslot) {
+            gslot = _.clone(slot);
+            gslot.id = slotId;
+            gslot.calendarIds = [];
+            indexedSlots[slotId] = gslot;
+          }
+          gslot.calendarIds.push(calendarId);
         });
       });
-      
-      // Before returning we convert into an array.
-      var sortedTimes = _.keys(groupedSlots).sort();
-      return _.map(sortedTimes, (t) => groupedSlots[t] );
+
+      return {
+        slots : _.values(indexedSlots),
+        resources : freeBusy.resources
+      };
     });
   }
 

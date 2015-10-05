@@ -1,36 +1,181 @@
   
 module.exports = {
 
-  freeBusyQuery : 
-  {
-   "kind": "calendar#freeBusy",
-   "timeMin": "2015-10-09T04:00:00.000Z",
-   "timeMax": "2015-10-10T02:00:00.000Z",
-   "calendars": {
-    "PA3-Russia@resource.medallia.com": {
-     "available": [
-      {
-       "start": "2015-10-09T16:45:00Z",
-       "end": "2015-10-09T16:57:00Z"
-      },
-      {
-       "start": "2015-10-09T17:15:00Z",
-       "end": "2015-10-09T18:30:00Z"
-      },
-      {
-       "start": "2015-10-09T23:00:00Z",
-       "end": "2015-10-10T00:30:00Z"
-      }
+  groupedFreeSlotList : {
+     "slots":[
+        {
+           "start":new Date("2015-10-09T19:00:00.000Z"),
+           "end":new Date("2015-10-09T20:00:00.000Z"),
+           "id":1444417200000,
+           "calendarIds":[
+              "medallia.com_3339353632343333323839@resource.calendar.google.com",
+              "medallia.com_3436313935323233373333@resource.calendar.google.com",
+              "medallia.com_2d3933373537323832363530@resource.calendar.google.com",
+              "medallia.com_2d3433363032372d363939@resource.calendar.google.com"
+           ]
+        },
+        {
+           "start":new Date("2015-10-09T23:00:00.000Z"),
+           "end":new Date("2015-10-10T00:00:00.000Z"),
+           "id":1444431600000,
+           "calendarIds":[
+              "medallia.com_3339353632343333323839@resource.calendar.google.com"
+           ]
+        },
+        {
+           "start":new Date("2015-10-09T21:00:00.000Z"),
+           "end":new Date("2015-10-09T22:00:00.000Z"),
+           "id":1444424400000,
+           "calendarIds":[
+              "medallia.com_3436313935323233373333@resource.calendar.google.com"
+           ]
+        },
+        {
+           "start":new Date("2015-10-09T19:30:00.000Z"),
+           "end":new Date("2015-10-09T20:30:00.000Z"),
+           "id":1444419000000,
+           "calendarIds":[
+              "medallia.com_2d3933373537323832363530@resource.calendar.google.com"
+           ]
+        },
+        {
+           "start":new Date("2015-10-10T00:00:00.000Z"),
+           "end":new Date("2015-10-10T01:00:00.000Z"),
+           "id":1444435200000,
+           "calendarIds":[
+              "medallia.com_2d3338303236343538383037@resource.calendar.google.com"
+           ]
+        },
+        {
+           "start":new Date("2015-10-10T00:30:00.000Z"),
+           "end":new Date("2015-10-10T01:30:00.000Z"),
+           "id":1444437000000,
+           "calendarIds":[
+              "medallia.com_2d3338303236343538383037@resource.calendar.google.com"
+           ]
+        },
+        {
+           "start":new Date("2015-10-09T18:30:00.000Z"),
+           "end":new Date("2015-10-09T19:30:00.000Z"),
+           "id":1444415400000,
+           "calendarIds":[
+              "medallia.com_2d3433363032372d363939@resource.calendar.google.com"
+           ]
+        }
      ],
-      "taken": [
-      {
-       "start": "2015-10-09T16:45:00Z",
-       "end": "2015-10-09T16:57:00Z",
-       "eventId" : "3943493849"
-      },
+     "resources":[
+        {
+           "kind":"calendar#calendarListEntry",
+           "etag":"\"1444025801769000\"",
+           "id":"medallia.com_3339353632343333323839@resource.calendar.google.com",
+           "summary":"PA3-Portal (Polycom - seats 6)",
+           "timeZone":"America/Los_Angeles",
+           "colorId":"12",
+           "backgroundColor":"#fad165",
+           "foregroundColor":"#000000",
+           "accessRole":"reader",
+           "defaultReminders":[
 
+           ]
+        },
+        {
+           "kind":"calendar#calendarListEntry",
+           "etag":"\"1444025802265000\"",
+           "id":"medallia.com_3436313935323233373333@resource.calendar.google.com",
+           "summary":"PA3-Russia (seats 6 casual)",
+           "timeZone":"America/Los_Angeles",
+           "colorId":"18",
+           "backgroundColor":"#b99aff",
+           "foregroundColor":"#000000",
+           "accessRole":"reader",
+           "defaultReminders":[
+
+           ]
+        },
+        {
+           "kind":"calendar#calendarListEntry",
+           "etag":"\"1444025802911000\"",
+           "id":"medallia.com_2d3933373537323832363530@resource.calendar.google.com",
+           "summary":"PA3-South Africa (LifeSize - seats 10)",
+           "timeZone":"America/Los_Angeles",
+           "colorId":"13",
+           "backgroundColor":"#92e1c0",
+           "foregroundColor":"#000000",
+           "accessRole":"reader",
+           "defaultReminders":[
+
+           ]
+        },
+        {
+           "kind":"calendar#calendarListEntry",
+           "etag":"\"1444025800020000\"",
+           "id":"medallia.com_2d3338303236343538383037@resource.calendar.google.com",
+           "summary":"PA3-Australia (LifeSize - seats 10)",
+           "timeZone":"America/Los_Angeles",
+           "colorId":"12",
+           "backgroundColor":"#fad165",
+           "foregroundColor":"#000000",
+           "accessRole":"reader",
+           "defaultReminders":[
+
+           ]
+        },
+        {
+           "kind":"calendar#calendarListEntry",
+           "etag":"\"1444025800584000\"",
+           "id":"medallia.com_2d3234373732353931383332@resource.calendar.google.com",
+           "summary":"PA3-Mario (Polycom - seats 5)",
+           "timeZone":"America/Los_Angeles",
+           "colorId":"7",
+           "backgroundColor":"#42d692",
+           "foregroundColor":"#000000",
+           "accessRole":"reader",
+           "defaultReminders":[
+
+           ]
+        },
+        {
+           "kind":"calendar#calendarListEntry",
+           "etag":"\"1444025801214000\"",
+           "id":"medallia.com_2d3433363032372d363939@resource.calendar.google.com",
+           "summary":"PA3-New Zealand (LifeSize - seats 10)",
+           "timeZone":"America/Los_Angeles",
+           "colorId":"7",
+           "backgroundColor":"#42d692",
+           "foregroundColor":"#000000",
+           "accessRole":"reader",
+           "defaultReminders":[
+
+           ]
+        }
+     ]
+  },
+
+  freeBusyQuery : {
+    "kind": "calendar#freeBusy",
+    "timeMin": "2015-10-09T04:00:00.000Z",
+    "timeMax": "2015-10-10T02:00:00.000Z",
+    "calendars": {
+      "PA3-Russia@resource.medallia.com": {
+        "available": [{
+         "start": "2015-10-09T16:45:00Z",
+         "end": "2015-10-09T16:57:00Z"
+        },
+        {
+         "start": "2015-10-09T17:15:00Z",
+         "end": "2015-10-09T18:30:00Z"
+        },
+        {
+         "start": "2015-10-09T23:00:00Z",
+         "end": "2015-10-10T00:30:00Z"
+        }],
+        "taken": [{
+         "start": "2015-10-09T16:45:00Z",
+         "end": "2015-10-09T16:57:00Z",
+         "eventId" : "3943493849"
+        }]
+      }
     }
-   }
   },
 
   calendarList : 
