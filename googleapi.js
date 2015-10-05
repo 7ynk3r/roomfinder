@@ -107,11 +107,13 @@ GoogleAPI.prototype = {
     console.log("freeSlotList");
     
     var that = this;
+    var context = {};
     
     return that
     .resourcesList()
     .then(function(rs) {
       console.log("freeSlotList rs " + rs)
+      context.resources = rs;
       return _.map(rs, (r) => r.id);
     })
     .then(function(items) {
@@ -134,8 +136,11 @@ GoogleAPI.prototype = {
             slotsMax)
         };
       }
-            
-      return slots;
+      
+      return {
+        resources : context.resources,
+        slots : slots
+      };
     });
   },
   
@@ -176,6 +181,33 @@ GoogleAPI.prototype = {
       
     }
     return available; 
+  },
+  
+  
+  groupedFreeSlotList : function(timeMin, timeMax, stepSize, slotSize, slotsMax) {
+    return this
+    .freeSlotList(timeMin, timeMax, stepSize, slotSize, slotsMax)
+    .then(function(slots) {
+      var calendars = slots.calendars;
+      var groupedSlots = {};
+      
+      _.each(calendars, (calendarKey, calendar) => {
+        _.each(calendar.available, (slot) => {
+          var time = slot.start.getTime();
+          // Init a group for the specific time.
+          if (!groupedSlots[time]) {
+            groupedSlots[time] = [];
+          }
+          // Push the slot
+          slot.summary = calendarKey;
+          groupedSlots[time].push(slot);
+        });
+      });
+      
+      // Before returning we convert into an array.
+      var sortedTimes = _.keys(groupedSlots).sort();
+      return _.map(sortedTimes, (t) => groupedSlots[t] );
+    });
   }
 
 

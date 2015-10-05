@@ -7,8 +7,8 @@ module.exports = {
    "timeMin": "2015-10-09T04:00:00.000Z",
    "timeMax": "2015-10-10T02:00:00.000Z",
    "calendars": {
-    "davidv@medallia.com": {
-     "busy": [
+    "PA3-Russia@resource.medallia.com": {
+     "available": [
       {
        "start": "2015-10-09T16:45:00Z",
        "end": "2015-10-09T16:57:00Z"
@@ -21,7 +21,14 @@ module.exports = {
        "start": "2015-10-09T23:00:00Z",
        "end": "2015-10-10T00:30:00Z"
       }
-     ]
+     ],
+      "taken": [
+      {
+       "start": "2015-10-09T16:45:00Z",
+       "end": "2015-10-09T16:57:00Z",
+       "eventId" : "3943493849"
+      },
+
     }
    }
   },

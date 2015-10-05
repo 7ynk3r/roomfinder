@@ -35,13 +35,6 @@ var roomfinder = React.createClass({
     this.setState({
       modalVisible: true,
     });
-    // this.setState({
-    //   dataSource: this.state.dataSource.cloneWithRows(mockData),
-    // });    
-  },
-
-  _setModalVisible(visible) {
-    this.setState({modalVisible: visible});
   },
   
   _onCode(code) {   
