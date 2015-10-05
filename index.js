@@ -52,17 +52,18 @@ var roomfinder = React.createClass({
     
     googleapi
     .authenticate()
-    // .then(function(){
-    //   var timeMin = new Date(2015, 9, 9,  1, 0, 0, 0);
-    //   var timeMax = new Date(2015, 9, 9, 23, 0, 0, 0);
-    //   return googleapi.freeSlotList(timeMin, timeMax, 30, 60, 2);
-    // })
-    // .then(function(data){
-    //   console.log('Request succeeded with JSON response', data);
-    //   that.setState({
-    //     dataSource: that.state.dataSource.cloneWithRows(data),
-    //   });
-    // });
+    .then(function(){
+      var timeMin = new Date(2015, 10, 5,  1, 0, 0, 0);
+      var timeMax = new Date(2015, 10, 5, 23, 0, 0, 0);
+      console.log('-------------------> XXXXX CALLING freeSlotList');
+      return googleapi.freeSlotList(timeMin, timeMax, 30, 60, 2);
+    })
+    .then(function(data){
+      console.log('-------------------> Request succeeded with JSON response', data);
+      that.setState({
+        dataSource: that.state.dataSource.cloneWithRows(data),
+      });
+    });
    
     // .then(function(){
     //   return googleapi.resourcesList();    
@@ -74,15 +75,15 @@ var roomfinder = React.createClass({
     //   });
     // });
     
-    .then(function(){
-      return googleapi.calendarList();    
-    })
-    .then(function(data){
-      console.log('Request succeeded with JSON response', data);  
-      that.setState({
-        dataSource: that.state.dataSource.cloneWithRows(data.items),
-      });
-    });
+    // .then(function(){
+    //   return googleapi.calendarList();    
+    // })
+    // .then(function(data){
+    //   console.log('Request succeeded with JSON response', data);  
+    //   that.setState({
+    //     dataSource: that.state.dataSource.cloneWithRows(data.items),
+    //   });
+    // });
   },
   
   render() {
