@@ -66,11 +66,12 @@ GoogleAPI.prototype = {
 
   resourcesList : function() {
     console.log("resourcesList");
-    
+    var that = this;
+
     return this.calendarList()
     .then(function(data) {
       console.log("resourcesList data " + data);
-      return _.filter(data.items, (item) => item.id.endsWith('@resource.calendar.google.com'));
+      return _.filter(data.items, (item) => that.isResourceEmail(item.id));
     });
   },
   
@@ -116,7 +117,7 @@ GoogleAPI.prototype = {
       return _.map(rs, (r) => r.id);
     })
     .then(function(items) {
-      console.log("freeSlotList items " + items)
+      console.log("freeSlotList items " + JSON.stringify(items));
       return that.freeBusyQuery(timeMin, timeMax, items);
     })
     .then(function(slots) {
@@ -136,11 +137,62 @@ GoogleAPI.prototype = {
         };
       }
       
-      return {
-        resources : context.resources,
-        slots : slots
-      };
+      return slots;
+    })
+    .then(function(slots) {
+      var resources = context.resources;
+      return that
+        .listEvents(timeMin, timeMax)
+        .then(function(events) {
+          var calendarId = events.summary;
+          _.each(events.items, (event) => {
+
+            // resource contains a meeting room that accepted the event of the primary user.
+            var resource = that.getAcceptedResource(event);
+            if (resource) {
+              var resourceEmail = resource.email;
+              if (!slots.calendars[resourceEmail]) {
+                slots.calendars[resourceEmail] = {};
+              }
+              var takenSlots = slots.calendars[resourceEmail]['taken'];
+              if (!takenSlots) takenSlots = [];
+              takenSlots.push({
+                start: event.start,
+                end: event.end,
+                eventId: event.id
+              });
+              slots.calendars[resourceEmail]['taken'] = takenSlots;
+
+              // Adds the resource if it is not included into the resources list yet.
+              if (!_.find(resources, (rs) => rs.id == resourceEmail)) {
+                resources.push({
+                  id: resourceEmail,
+                  summary: resource.displayName
+                });
+              }
+            }
+          });
+        
+          var result = {
+            resources : resources,
+            slots : slots
+          };
+
+          return result;
+        });
     });
+  },
+
+  // Searchs for a resournce (or meeting room) that have accepted the event.
+  getAcceptedResource: function(event) {
+    var that = this;
+    return _.find(event.attendees, (attendee) => {
+      return (that.isResourceEmail(attendee.email) && attendee.responseStatus == 'accepted');
+    });
+  },
+
+  isResourceEmail: function(email) {
+    return email.endsWith('@resource.calendar.google.com');
   },
   
   freeSlotListForCalendar : function(timeMin, timeMax, busy, stepSize, slotSize, slotsMax) {
@@ -182,6 +234,9 @@ GoogleAPI.prototype = {
     return available; 
   },
   
+  listEvents: function(timeMin, timeMax) {
+    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=' + timeMin.toJSON() + '&timeMax=' + timeMax.toJSON(), 'get');
+  },
   
   groupedFreeSlotList : function(timeMin, timeMax, stepSize, slotSize, slotsMax) {
     
