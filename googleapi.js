@@ -157,8 +157,8 @@ GoogleAPI.prototype = {
               var takenSlots = slots.calendars[resourceEmail]['taken'];
               if (!takenSlots) takenSlots = [];
               takenSlots.push({
-                start: event.start,
-                end: event.end,
+                start: new Date(event.start),
+                end: new Date(event.end),
                 eventId: event.id
               });
               slots.calendars[resourceEmail]['taken'] = takenSlots;
@@ -247,7 +247,9 @@ GoogleAPI.prototype = {
       var calendarsSlots = slots.calendars;      
       var indexedSlots = {};
       _.each(calendarsSlots, (calendarSlots, calendarId) => {
-        _.each(calendarSlots.available, (slot) => {
+        // TODO:  check for warnings after adding `taken`.
+        // _.each((calendarSlots.available||[]), (slot) => {
+        _.each((calendarSlots.available||[]).concat(calendarSlots.taken||[]), (slot) => {
           // Add the time as the id.
           var slotId = slot.start.getTime();
           var gslot = indexedSlots[slotId];
