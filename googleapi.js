@@ -150,9 +150,9 @@ GoogleAPI.prototype = {
         .listEvents(timeMin, timeMax)
         .then(function(events) {
           var primaryCalendarId = events.summary;
-          _.each(events.items, (event) => {
-            if (primaryCalendarId !== event.creator.email) return;
-
+          var ownedEventItems = _.filter(events.items, (event) => event.creator && primaryCalendarId === event.creator.email);          
+          
+          _.each(ownedEventItems, (event) => {
             // resource contains a meeting room that accepted the event of the primary user.
             var resource = that.getAcceptedResource(event);
             if (resource) {
