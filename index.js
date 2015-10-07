@@ -28,7 +28,7 @@ var roomfinder = React.createClass({
     // http://moduscreate.com/react-native-listview-with-section-headers/
     var ds = new ListView.DataSource({
       getSectionHeaderData : (dataBlob, sid) => dataBlob.slots[sid],
-      getRowData : (dataBlob, sid, rid) => dataBlob.resources[rid],
+      getRowData : (dataBlob, sid, rid) => { return {slot: dataBlob.slots[sid], resource: dataBlob.resources[rid]}; },
       rowHasChanged : (r1, r2) => r1 !== r2,
       sectionHeaderHasChanged : (s1, s2) => s1 !== s2
     });
@@ -47,8 +47,9 @@ var roomfinder = React.createClass({
   
   _updateDataSource(data) {
     var sortedSlots = _.sortBy(data.slots, 'start');    
-    var soterdSlotIds = _.map(sortedSlots, (s) => s.id);
-    var sortedResIds = _.map(sortedSlots, (s) => s.calendarIds);      
+    var sortedSlotIds = _.pluck(sortedSlots, 'id');
+    var sortedResIds = _.map(sortedSlots, (s) => _.keys(s.calendars));      
+
     var dataBlob = {
       slots : _.indexBy(data.slots, 'id'),
       resources : _.indexBy(data.resources, 'id')
@@ -57,7 +58,7 @@ var roomfinder = React.createClass({
     this.setState({
       dataSource: this.state.dataSource.cloneWithRowsAndSections(
         dataBlob, 
-        soterdSlotIds, 
+        sortedSlotIds, 
         sortedResIds)
     });
   },
@@ -69,23 +70,44 @@ var roomfinder = React.createClass({
       modalVisible: false,        
     });
     
+    return that
+    ._authenticate(code)
+    .then(that._groupedFreeSlotList);
+  },
+  
+  _authenticate(code) {
     googleapi.init(
       code,
       secret.google.client_id,
       secret.google.client_secret
     );
     
-    googleapi
-    .authenticate()
-    .then(function(){
-      var timeMin = new Date(2015, 9, 9, 10, 0, 0, 0);
-      var timeMax = new Date(2015, 9, 9, 20, 0, 0, 0);
-      return googleapi.groupedFreeSlotList(timeMin, timeMax, 30, 60, 3);
-    })
+    return googleapi.authenticate();
+  },
+  
+  _groupedFreeSlotList() {
+    var that = this;
+    var timeMin = new Date(2015, 9, 9, 10, 0, 0, 0);
+    var timeMax = new Date(2015, 9, 9, 20, 0, 0, 0);
+    return googleapi
+    .groupedFreeSlotList(timeMin, timeMax, 30, 60, 3)
     .then(function(data){
       console.log('Request succeeded with JSON response', data);
       that._updateDataSource(data);
     });
+  },
+  
+  _onPressButton(rowData){
+    var that = this;
+    var slot = rowData.slot;
+    var calendar = rowData.resource;
+    var eventId = slot.calendars[calendar.id].eventId;
+    var insertDeleteEvent = eventId 
+    ? googleapi.deleteEvent(eventId)
+    : googleapi.insertEvent(calendar.id, 'roomfinder', slot.start, slot.end);
+    
+    return insertDeleteEvent
+    .then(that._groupedFreeSlotList);
   },
   
   render() {
@@ -117,12 +139,16 @@ var roomfinder = React.createClass({
             </Text>
           }
           renderRow = {(rowData) => 
-            <Text style={[styles.row, {
-              color: rowData.foregroundColor,
-              backgroundColor : rowData.backgroundColor
-            }]}>
-              {rowData.summary}
-            </Text>
+            <TouchableHighlight 
+              underlayColor='#a9d9d4'
+              onPress={() => this._onPressButton(rowData)}>
+              <Text style={[styles.row, {
+                color: rowData.resource.foregroundColor,
+                backgroundColor : rowData.resource.backgroundColor
+              }]}>
+                {rowData.resource.summary}
+              </Text>
+            </TouchableHighlight>
           }/>
           
       </View>
@@ -136,22 +162,22 @@ var styles = StyleSheet.create({
     marginTop: 20,
   },
   section : {
-    padding: 10,
+    padding: 15,
     marginTop: 8,
-    marginBottom: 2,
-    margin: 4,
-    borderRadius: 3, 
+    marginBottom: 1,
+    margin: 5,
+    borderRadius: 10, 
     color: 'white',
     backgroundColor : 'gray',
     fontWeight: 'bold',
     textAlign: 'center'
   },
   row : {
-    padding: 10,
-    marginTop: 0,
-    marginBottom: 2,
-    margin: 4,
-    borderRadius: 3, 
+    padding: 15,
+    marginTop: 1,
+    marginBottom: 1,
+    margin: 5,
+    borderRadius: 10, 
   },
 });
 

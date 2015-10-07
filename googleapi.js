@@ -27,7 +27,8 @@ GoogleAPI.prototype = {
       headers: {  
         "Content-type" : "application/x-www-form-urlencoded",
       },
-      body:body
+      body:body,
+      cache:'no-store,no-cache'
     })
     .then(function(response) {
       return response.json();
@@ -54,6 +55,7 @@ GoogleAPI.prototype = {
       body: bodyParams
     })
     .then(function(response) {  
+      console.log('--------------> finished [' +response.status + '] API [' + methodName + ']' + url + ' with body: ' + bodyParams);
       return response.json();
     });
   },
@@ -74,6 +76,10 @@ GoogleAPI.prototype = {
       return _.filter(data.items, (item) => that.isResourceEmail(item.id));
     });
   },
+
+  listEvents: function(timeMin, timeMax) {
+    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=' + timeMin.toJSON() + '&timeMax=' + timeMax.toJSON(), 'get');
+  },
   
   insertEvent: function(calendarId, summary, start, end) {
     var params = {};
@@ -84,8 +90,8 @@ GoogleAPI.prototype = {
     return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events', 'post', params);
   },
 
-  deleteEvent: function(calendarId, eventId) {
-    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/' + calendarId + '/events/' + eventId, 'delete');
+  deleteEvent: function(eventId) {
+    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events/' + eventId, 'delete');
   },
 
   freeBusyQuery: function(start, end, calendarIds) {
@@ -93,7 +99,6 @@ GoogleAPI.prototype = {
     _.each(calendarIds, (calendarId) => calendars.push({'id' : calendarId}));
 
     var params = {};
-    // params['kind'] = 'calendar#freeBusy';
     params['timeMin'] = start;
     params['timeMax'] = end;
     params['items'] = calendars;
@@ -144,8 +149,9 @@ GoogleAPI.prototype = {
       return that
         .listEvents(timeMin, timeMax)
         .then(function(events) {
-          var calendarId = events.summary;
+          var primaryCalendarId = events.summary;
           _.each(events.items, (event) => {
+            if (primaryCalendarId !== event.creator.email) return;
 
             // resource contains a meeting room that accepted the event of the primary user.
             var resource = that.getAcceptedResource(event);
@@ -157,8 +163,8 @@ GoogleAPI.prototype = {
               var takenSlots = slots.calendars[resourceEmail]['taken'];
               if (!takenSlots) takenSlots = [];
               takenSlots.push({
-                start: new Date(event.start),
-                end: new Date(event.end),
+                start: new Date(event.start.dateTime),
+                end: new Date(event.end.dateTime),
                 eventId: event.id
               });
               slots.calendars[resourceEmail]['taken'] = takenSlots;
@@ -233,11 +239,7 @@ GoogleAPI.prototype = {
     }
     return available; 
   },
-  
-  listEvents: function(timeMin, timeMax) {
-    return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=' + timeMin.toJSON() + '&timeMax=' + timeMax.toJSON(), 'get');
-  },
-  
+    
   groupedFreeSlotList : function(timeMin, timeMax, stepSize, slotSize, slotsMax) {
     
     return this
@@ -247,20 +249,18 @@ GoogleAPI.prototype = {
       var calendarsSlots = slots.calendars;      
       var indexedSlots = {};
       _.each(calendarsSlots, (calendarSlots, calendarId) => {
-        // TODO:  check for warnings after adding `taken`.
-        // _.each((calendarSlots.available||[]), (slot) => {
         _.each((calendarSlots.available||[]).concat(calendarSlots.taken||[]), (slot) => {
           // Add the time as the id.
           var slotId = slot.start.getTime();
           var gslot = indexedSlots[slotId];
           // Push the slot
           if (!gslot) {
-            gslot = _.clone(slot);
+            gslot = _.pick(slot, 'start', 'end');
             gslot.id = slotId;
-            gslot.calendarIds = [];
+            gslot.calendars = {};
             indexedSlots[slotId] = gslot;
           }
-          gslot.calendarIds.push(calendarId);
+          gslot.calendars[calendarId] = {eventId:slot.eventId};
         });
       });
 
