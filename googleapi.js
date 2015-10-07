@@ -56,7 +56,7 @@ GoogleAPI.prototype = {
     })
     .then(function(response) {  
       console.log('--------------> finished [' +response.status + '] API [' + methodName + ']' + url + ' with body: ' + bodyParams);
-      return response.json();
+      return methodName === 'delete' ? response : response.json();
     });
   },
 
@@ -151,7 +151,7 @@ GoogleAPI.prototype = {
         .then(function(events) {
           var primaryCalendarId = events.summary;
           var ownedEventItems = _.filter(events.items, (event) => event.creator && primaryCalendarId === event.creator.email);          
-          
+
           _.each(ownedEventItems, (event) => {
             // resource contains a meeting room that accepted the event of the primary user.
             var resource = that.getAcceptedResource(event);
