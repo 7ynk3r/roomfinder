@@ -226,7 +226,9 @@ GoogleAPI.prototype = {
       var end = new Date(start.getTime() + slotSize * mins);
       var isBusy = _.some(busy, function(b) {
         return (start >= b.start && start < b.end)
-          || (end > b.start && end <= b.end);
+          || (end > b.start && end <= b.end)
+          || (b.start >= start && b.start < end)
+          || (b.end > start && b.end <= end);
       });
       // If available add it to the list.
       if (!isBusy) {

@@ -90,7 +90,7 @@ var roomfinder = React.createClass({
     var timeMin = new Date(2015, 9, 9, 10, 0, 0, 0);
     var timeMax = new Date(2015, 9, 9, 20, 0, 0, 0);
     return googleapi
-    .groupedFreeSlotList(timeMin, timeMax, 30, 60, 3)
+    .groupedFreeSlotList(timeMin, timeMax, 15, 30, 10)
     .then(function(data){
       console.log('Request succeeded with JSON response', data);
       that._updateDataSource(data);
@@ -146,7 +146,7 @@ var roomfinder = React.createClass({
                 color: rowData.resource.foregroundColor,
                 backgroundColor : rowData.resource.backgroundColor
               }]}>
-                {rowData.resource.summary}
+                {(rowData.slot.calendars[rowData.resource.id].eventId ? "[TAKEN] " : "") + rowData.resource.summary}
               </Text>
             </TouchableHighlight>
           }/>
