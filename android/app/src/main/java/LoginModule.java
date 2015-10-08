@@ -17,7 +17,6 @@ import java.util.Map;
 public class LoginModule extends ReactContextBaseJavaModule {
 
 	private static ReactContext sReactContext;
-	private static Callback sCallback;
 
 	public LoginModule(ReactApplicationContext reactContext) {
 		super(reactContext);
@@ -32,16 +31,14 @@ public class LoginModule extends ReactContextBaseJavaModule {
 		WritableMap map = Arguments.createMap();
 		for (Map.Entry<String, String> entry : params.entrySet()) {
 			map.putString(entry.getKey(), entry.getValue());
-			Log.d("Log------------> ", entry.getKey());
-
+			Log.d("LoginModule", entry.getKey());
 		}
-//		sCallback.invoke(map);
 		sReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("login", map);
 	}
 
+	@SuppressWarnings("unused")
 	@ReactMethod
-	public void login(String googleClientId, Callback callback) {
-		sCallback = callback;
+	public void login(String googleClientId) {
 		ReactApplicationContext reactApplicationContext = getReactApplicationContext();
 		Intent intent = com.facebook.react.uiapp.LoginActivity.newIntent(reactApplicationContext, googleClientId);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

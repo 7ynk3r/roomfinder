@@ -16,12 +16,11 @@ import java.util.Map;
 public class LoginActivity extends Activity {
 
 	private static final String GOOGLE_CLIENT_ID_ARG = "googleClientId";
-	private String mGoogleClientId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mGoogleClientId = getIntent().getExtras().getString(GOOGLE_CLIENT_ID_ARG);
+		String googleClientId = getIntent().getExtras().getString(GOOGLE_CLIENT_ID_ARG);
 		setContentView(R.layout.activity_login);
 		WebView webview = (WebView) findViewById(R.id.webview);
 		WebSettings settings = webview.getSettings();
@@ -49,7 +48,7 @@ public class LoginActivity extends Activity {
 				Log.i("TAG", "Finished loading URL: " + url);
 			}
 		});
-		webview.loadUrl("https://accounts.google.com/o/oauth2/auth?client_id=" + mGoogleClientId + "&redirect_uri=http%3A%2F%2Flocalhost&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&approval_prompt=force&access_type=offline");
+		webview.loadUrl("https://accounts.google.com/o/oauth2/auth?client_id=" + googleClientId + "&redirect_uri=http%3A%2F%2Flocalhost&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&approval_prompt=force&access_type=offline");
 	}
 
 	private void notifyLogin(Map<String, String> result) {

@@ -35,10 +35,7 @@ var LoginView = React.createClass({
 
   componentDidMount: function() {
     LoginModule.login(
-          this.props.client_id, 
-          (successCallback) => {
-            console.log(successCallback.code);
-          });
+          this.props.client_id);
   },
 
   render() {
