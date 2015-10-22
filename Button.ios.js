@@ -1,39 +1,56 @@
 'use strict';
 
+// references
+// https://facebook.github.io/react-native/docs/modal.html#content
+// https://github.com/facebook/react-native/issues/1234
+
+var _ = require('underscore');
+
 var React = require('react-native');
 var {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight,
   ActivityIndicatorIOS,
+  TouchableWithoutFeedback,
+  Animated,
 } = React;
 
 
-var Button = React.createClass({
-  getDefaultProps: function() {
+class Button extends React.Component {
+
+  static get states() {
     return {
-      loading: false
+      initial:0,
+      intermediate:1,
+      final:2,
     };
-  },
+  }
   
-  componentDidMount() {
+  _isInitialState() { return this.props.state === Button.states.initial; }
+  _isIntermediateState() { return this.props.state === Button.states.intermediate; }
+  _isFinalState() { return this.props.state === Button.states.final; }
+  
+  constructor(props: any) {
+    super(props);
     this.state = {
-      bounceValue: new Animated.Value(1.0),
-      loading: this.pro,
-    };    
+      bounceValue: new Animated.Value(1),
+      fadeAnim: new Animated.Value(0), 
+    };
+    
+    // TODO: Property validation
+    // https://facebook.github.io/react/docs/reusable-components.html#prop-validation
+    // this.propTypes = {
+    //   state: React.PropTypes.oneOf(['News', 'Photos']).isRequired,
+    // };    
   }
-  
-  _onPress() {
-    console.log('_onPress %s', this.state.loading);
-    this.setState({
-      loading:true
-    });
-  }
+    
+  // componentDidMount() {
+  //   console.log('componentDidMount ');
+  // }  
   
   _onHighlight() {
-    console.log('_onHighlight %s', this.state.loading);
-    if (this.state.loading) return;
+    console.log('_onHighlight %s', this._isIntermediateState());
     Animated.spring(                          // Base: spring, decay, timing
       this.state.bounceValue,                 // Animate `bounceValue`
       {
@@ -44,8 +61,7 @@ var Button = React.createClass({
   }
   
   _onUnhighlight() {
-    console.log('_onUnhighlight %s', this.state.loading);
-    if (this.state.loading) return;    
+    console.log('_onUnhighlight %s', this._isIntermediateState());
     Animated.spring(                          // Base: spring, decay, timing
       this.state.bounceValue,                 // Animate `bounceValue`
       {
@@ -54,43 +70,75 @@ var Button = React.createClass({
       }
     ).start();                                // Start the animation
   }  
+  
+  _startLoadingAnimation() {
+    console.log('_startLoadingAnimation %s', this._isIntermediateState());
+
+    var animatedInital = 
+      Animated.timing(   
+        this.state.fadeAnim,
+        {
+          toValue: 0,
+          // duration: 500,
+        },
+      );
+    var animatedFinal = 
+      Animated.timing(   
+        this.state.fadeAnim,
+        {
+          toValue: 1,
+          // duration: 500,
+        },
+      );
+
+    var animated 
+      = this._isInitialState() ? animatedInital
+      : this._isFinalState() ? animatedFinal
+      : Animated.sequence([ 
+          animatedFinal,
+          animatedInital,           
+        ]);
+      
+    animated.start((result) => {
+      // TODO: This may leak memory after unmount.
+      if (this._isIntermediateState()) {
+        this._startLoadingAnimation();
+      }
+    });    
+  }
 
   render() {
+    console.log('render %s', this._isIntermediateState());
+    
+    var buttonContent = 
+        <Text style={{
+          color: 'black',
+        }}>
+          {this.props.children}
+        </Text>    
+    
+    this._startLoadingAnimation();
+    
     return (
       <TouchableWithoutFeedback
         onPress={this.props.onPress}
         onPressOut={_.bind(this._onUnhighlight, this)}
         onPressIn={_.bind(this._onHighlight, this)}
         delayPressOut={1}
-        style={[
-          {
-            flex:1,
-          }, 
-          this.props.style
-      ]}>
-        <View 
-          style={{
-            flex:1,
-        }}>
-          <Animated.View 
-            style={{
-              flex:1,
-              backgroundColor: 'violet',
+      >
+        <Animated.View 
+          style={[
+            {
               alignItems: 'center',
               justifyContent: 'center',
               transform: [ 
                 {scale: this.state.bounceValue}, 
-              ]      
-          }}>
-            <Text style={{
-              backgroundColor: 'grey',
-              color: 'white',
-            }}>
-              Hola mundo
-            </Text>
-          </Animated.View>
+              ],           
+            },
+            this.props.style,
+        ]}>
+          {buttonContent}
           
-
           <View style={{
             position: 'absolute',
             left: 0,
@@ -101,23 +149,36 @@ var Button = React.createClass({
             flexDirection: 'row',
             justifyContent: 'flex-end',
             alignItems: 'center',
-            backgroundColor: 'transparent',
-            opacity: this.state.loading ? 1 : 0,
+            backgroundColor: 'transparent'
           }}>
-            <ActivityIndicatorIOS 
-              color='black'
+            <Animated.Image 
+              source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
               style={{
-                backgroundColor: 'transparent',
-                marginRight: 20,
+                borderRadius: 15,
+                width: 30,
+                height: 30,
+                marginRight: 10,
+                opacity: this.state.fadeAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.25, 0.75],
+                }),
+                transform: [ 
+                  {scale: this.state.fadeAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.9, 1],
+                  })}, 
+                  // {rotate: this.state.fadeAnim.interpolate({
+                  //   inputRange: [0, 1],
+                  //   outputRange: ['360deg', '0deg'],
+                  // })}, 
+                ],           
             }}/>
           </View>
-          
-          
-        </View>
+        </Animated.View>
       </TouchableWithoutFeedback>      
     );  
   }
-});
+}
 
 var styles = StyleSheet.create({
   button: {

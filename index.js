@@ -16,12 +16,12 @@ var {
   Text,
   View,
   Modal,
-  TouchableWithoutFeedback,
   ListView,
   ActivityIndicatorIOS,
   Animated,
+  Image,
 } = React;
-// var Button = require('./Button');
+var Button = require('./Button');
 var GoogleAPIForm = require('./googleapi.form');
 var TimerMixin = require('react-timer-mixin');
 
@@ -29,122 +29,50 @@ class roomfinder extends React.Component {
   constructor(props: any) {
     super(props);
     this.state = {
-      bounceValue: new Animated.Value(1.0),
-      loading: false,
+      buttonState: Button.states.initial,
     };
   }
-  componentDidMount() {
-  }
-  _onHighlight() {
-    console.log('_onHighlight %s', this.state.loading);
-    if (this.state.loading) return;
-    Animated.spring(                          // Base: spring, decay, timing
-      this.state.bounceValue,                 // Animate `bounceValue`
-      {
-        toValue: 0.95,                         // Animate to smaller size
-        friction: 7,                          // Bouncier spring
-      }
-    ).start();                                // Start the animation
-  }
+  
   _onPress() {
-    console.log('_onPress %s', this.state.loading);
+    console.log('_onPress %s', this.state.buttonState);
     this.setState({
-      loading:true
+      buttonState: (this.state.buttonState+1)%3
     });
   }
-  _onUnhighlight() {
-    console.log('_onUnhighlight %s', this.state.loading);
-    if (this.state.loading) return;    
-    Animated.spring(                          // Base: spring, decay, timing
-      this.state.bounceValue,                 // Animate `bounceValue`
-      {
-        toValue: 1.0,                         // Animate to smaller size
-        friction: 7,                          // Bouncier spring
-      }
-    ).start();                                // Start the animation
-  }  
+  
   render() {
-    // var buttonContent = this.state.loading
-    //   ? <ActivityIndicatorIOS/>
-    //   : <Text style={{
-    //     backgroundColor: 'grey',
-    //     color: 'white',
-    //     opacity: 1,
-    //   }}>
-    //     Hola mundo
-    //   </Text>
-    
-    console.log('render %s', this.state.loading);
-    
+    console.log('render[index] %s', this.state.buttonState);    
 
     return (
       <View 
         style={{
           flex:1,
-          backgroundColor:'yellow',
+          backgroundColor:'white',
           marginTop: 20,
       }}>
-        <View 
-          style={{
-            height:50,
-            backgroundColor:'green',
-        }}>
-          <TouchableWithoutFeedback
-            onPress={_.bind(this._onPress, this)}
-            onPressOut={_.bind(this._onUnhighlight, this)}
-            onPressIn={_.bind(this._onHighlight, this)}
-            delayPressOut={1}
-            style={{
-              flex:1,
-          }}>
-            <View 
-              style={{
-                flex:1,
-            }}>
-              <Animated.View 
-                style={{
-                  flex:1,
-                  backgroundColor: 'violet',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transform: [ 
-                    {scale: this.state.bounceValue}, 
-                  ]      
-              }}>
-                <Text style={{
-                  backgroundColor: 'grey',
-                  color: 'white',
-                }}>
-                  Hola mundo
-                </Text>
-              </Animated.View>
-              
 
-              <View style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                backgroundColor: 'transparent',
-                opacity: this.state.loading ? 1 : 0,
-              }}>
-                <ActivityIndicatorIOS 
-                  color='black'
-                  style={{
-                    backgroundColor: 'transparent',
-                    marginRight: 20,
-                }}/>
-              </View>
-              
-              
-            </View>
-          </TouchableWithoutFeedback>      
-        </View>
+
+          <Image 
+            source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
+            style={{
+              margin: 20, 
+              width: 40, 
+              height: 40,
+              borderRadius: 20,
+          }}/>
+       
+       
+          <Button 
+            state={this.state.buttonState}
+            onPress={_.bind(this._onPress, this)}
+            style={{
+              height:50,
+              backgroundColor:'#fad165',
+              borderRadius: 5,
+              margin: 10,
+          }}>
+            PA3-Portal (Polycom - seats 6)
+          </Button>
       </View>
     );
   }
