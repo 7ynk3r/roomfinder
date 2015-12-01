@@ -1,5 +1,431 @@
+var _ = require('underscore');
+ 
+mockData = {
   
-module.exports = {
+  dataSource : {
+    "slots":[
+      {
+        "start":"2015-10-09T18:30:00.000Z",
+        "end":"2015-10-09T19:00:00.000Z",
+        "id":1444415400000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T18:45:00.000Z",
+        "end":"2015-10-09T19:15:00.000Z",
+        "id":1444416300000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T21:00:00.000Z",
+        "end":"2015-10-09T21:30:00.000Z",
+        "id":1444424400000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          },
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T22:45:00.000Z",
+        "end":"2015-10-09T23:15:00.000Z",
+        "id":1444430700000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T23:00:00.000Z",
+        "end":"2015-10-09T23:30:00.000Z",
+        "id":1444431600000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T23:15:00.000Z",
+        "end":"2015-10-09T23:45:00.000Z",
+        "id":1444432500000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T23:30:00.000Z",
+        "end":"2015-10-10T00:00:00.000Z",
+        "id":1444433400000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T23:45:00.000Z",
+        "end":"2015-10-10T00:15:00.000Z",
+        "id":1444434300000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T00:00:00.000Z",
+        "end":"2015-10-10T00:30:00.000Z",
+        "id":1444435200000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T00:15:00.000Z",
+        "end":"2015-10-10T00:45:00.000Z",
+        "id":1444436100000,
+        "calendars":{
+          "medallia.com_3339353632343333323839@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T19:00:00.000Z",
+        "end":"2015-10-09T19:30:00.000Z",
+        "id":1444417200000,
+        "calendars":{
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T01:00:00.000Z",
+        "end":"2015-10-10T01:30:00.000Z",
+        "id":1444438800000,
+        "calendars":{
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T01:15:00.000Z",
+        "end":"2015-10-10T01:45:00.000Z",
+        "id":1444439700000,
+        "calendars":{
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T01:30:00.000Z",
+        "end":"2015-10-10T02:00:00.000Z",
+        "id":1444440600000,
+        "calendars":{
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T01:45:00.000Z",
+        "end":"2015-10-10T02:15:00.000Z",
+        "id":1444441500000,
+        "calendars":{
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T02:00:00.000Z",
+        "end":"2015-10-10T02:30:00.000Z",
+        "id":1444442400000,
+        "calendars":{
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T02:15:00.000Z",
+        "end":"2015-10-10T02:45:00.000Z",
+        "id":1444443300000,
+        "calendars":{
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T02:30:00.000Z",
+        "end":"2015-10-10T03:00:00.000Z",
+        "id":1444444200000,
+        "calendars":{
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T02:45:00.000Z",
+        "end":"2015-10-10T03:15:00.000Z",
+        "id":1444445100000,
+        "calendars":{
+          "medallia.com_3436313935323233373333@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T17:00:00.000Z",
+        "end":"2015-10-09T17:30:00.000Z",
+        "id":1444410000000,
+        "calendars":{
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T17:15:00.000Z",
+        "end":"2015-10-09T17:45:00.000Z",
+        "id":1444410900000,
+        "calendars":{
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T17:30:00.000Z",
+        "end":"2015-10-09T18:00:00.000Z",
+        "id":1444411800000,
+        "calendars":{
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T19:15:00.000Z",
+        "end":"2015-10-09T19:45:00.000Z",
+        "id":1444418100000,
+        "calendars":{
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-09T19:30:00.000Z",
+        "end":"2015-10-09T20:00:00.000Z",
+        "id":1444419000000,
+        "calendars":{
+          "medallia.com_2d3933373537323832363530@resource.calendar.google.com":{
+
+          },
+          "medallia.com_2d3338303236343538383037@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T00:30:00.000Z",
+        "end":"2015-10-10T01:00:00.000Z",
+        "id":1444437000000,
+        "calendars":{
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      },
+      {
+        "start":"2015-10-10T00:45:00.000Z",
+        "end":"2015-10-10T01:15:00.000Z",
+        "id":1444437900000,
+        "calendars":{
+          "medallia.com_2d3433363032372d363939@resource.calendar.google.com":{
+
+          }
+        }
+      }
+    ],
+    "resources":[
+      {
+        "kind":"calendar#calendarListEntry",
+        "etag":"\"1444325611017000\"",
+        "id":"medallia.com_3339353632343333323839@resource.calendar.google.com",
+        "summary":"PA3-Portal (Polycom - seats 6)",
+        "timeZone":"America/Los_Angeles",
+        "colorId":"12",
+        "backgroundColor":"#fad165",
+        "foregroundColor":"#000000",
+        "accessRole":"reader",
+        "defaultReminders":[
+
+        ]
+      },
+      {
+        "kind":"calendar#calendarListEntry",
+        "etag":"\"1444325669575000\"",
+        "id":"medallia.com_3436313935323233373333@resource.calendar.google.com",
+        "summary":"PA3-Russia (seats 6 casual)",
+        "timeZone":"America/Los_Angeles",
+        "colorId":"18",
+        "backgroundColor":"#b99aff",
+        "foregroundColor":"#000000",
+        "accessRole":"reader",
+        "defaultReminders":[
+
+        ]
+      },
+      {
+        "kind":"calendar#calendarListEntry",
+        "etag":"\"1444025802911000\"",
+        "id":"medallia.com_2d3933373537323832363530@resource.calendar.google.com",
+        "summary":"PA3-South Africa (LifeSize - seats 10)",
+        "timeZone":"America/Los_Angeles",
+        "colorId":"13",
+        "backgroundColor":"#92e1c0",
+        "foregroundColor":"#000000",
+        "accessRole":"reader",
+        "defaultReminders":[
+
+        ]
+      },
+      {
+        "kind":"calendar#calendarListEntry",
+        "etag":"\"1444025800020000\"",
+        "id":"medallia.com_2d3338303236343538383037@resource.calendar.google.com",
+        "summary":"PA3-Australia (LifeSize - seats 10)",
+        "timeZone":"America/Los_Angeles",
+        "colorId":"12",
+        "backgroundColor":"#fad165",
+        "foregroundColor":"#000000",
+        "accessRole":"reader",
+        "defaultReminders":[
+
+        ]
+      },
+      {
+        "kind":"calendar#calendarListEntry",
+        "etag":"\"1444025800584000\"",
+        "id":"medallia.com_2d3234373732353931383332@resource.calendar.google.com",
+        "summary":"PA3-Mario (Polycom - seats 5)",
+        "timeZone":"America/Los_Angeles",
+        "colorId":"7",
+        "backgroundColor":"#42d692",
+        "foregroundColor":"#000000",
+        "accessRole":"reader",
+        "defaultReminders":[
+
+        ]
+      },
+      {
+        "kind":"calendar#calendarListEntry",
+        "etag":"\"1444239706692000\"",
+        "id":"medallia.com_2d3433363032372d363939@resource.calendar.google.com",
+        "summary":"PA3-New Zealand (LifeSize - seats 10)",
+        "timeZone":"America/Los_Angeles",
+        "colorId":"7",
+        "backgroundColor":"#42d692",
+        "foregroundColor":"#000000",
+        "accessRole":"reader",
+        "defaultReminders":[
+
+        ]
+      }
+    ]
+  },
+  
+
 
   groupedFreeSlotList : {
      "slots":[
@@ -486,3 +912,10 @@ module.exports = {
   ]
   
 };
+
+_.each(mockData.dataSource.slots, (s) => {
+  s.start = new Date(s.start);
+  s.end = new Date(s.end);
+});
+
+module.exports = mockData;

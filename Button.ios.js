@@ -33,46 +33,95 @@ class Button extends React.Component {
   
   constructor(props: any) {
     super(props);
+    // this.componentWillReceiveProps(props);
+    // console.log('constructor %s', this._isIntermediateState());
+
+    // this.componentWillReceiveProps(props);
+        
     this.state = {
+      // state: props.state,
       bounceValue: new Animated.Value(1),
       fadeAnim: new Animated.Value(0), 
     };
-    
+
     // TODO: Property validation
     // https://facebook.github.io/react/docs/reusable-components.html#prop-validation
     // this.propTypes = {
     //   state: React.PropTypes.oneOf(['News', 'Photos']).isRequired,
     // };    
   }
+  
+  // componentWillReceiveProps(props: any) {
+  //   // console.log('componentDidMount ');
+  //   var noState = _.isUndefined(this.state);
+  //   var hasChanged = noState || this.props.state != props.state;
     
+  //   if (noState) {
+      
+  //     // Initial state
+  //     this.state = {
+  //       state: props.state,
+  //       bounceValue: new Animated.Value(1),
+  //       fadeAnim: new Animated.Value(0),       
+  //     };
+      
+  //   }
+  //   else {
+  //     this.setState({state : props.state});      
+  //   }    
+  // } 
+    
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("shouldComponentUpdate ", this.props.state != nextProps.state);
+    return this.props.state != nextProps.state;
+  }
+  
   // componentDidMount() {
-  //   console.log('componentDidMount ');
+  //   // console.log('componentDidMount ');
+  //   this.state = {
+  //     state: this.props.state,
+  //     bounceValue: new Animated.Value(1),
+  //     fadeAnim: new Animated.Value(0), 
+  //   };
   // }  
   
+  componentWillUnmount() {
+    console.log("componentWillUnmount");
+  }
+
+  _onPress() {
+    // if (this._isIntermediateState()) return;
+    
+    // this.setState({
+    //   state: Button.states.intermediate,
+    // });
+    this.props.onPress();
+  }
+  
   _onHighlight() {
-    console.log('_onHighlight %s', this._isIntermediateState());
+    // console.log('_onHighlight %s', this._isIntermediateState());
     Animated.spring(                          // Base: spring, decay, timing
       this.state.bounceValue,                 // Animate `bounceValue`
       {
         toValue: 0.95,                         // Animate to smaller size
-        friction: 7,                          // Bouncier spring
+        friction: 1,                          // Bouncier spring
       }
     ).start();                                // Start the animation
   }
   
   _onUnhighlight() {
-    console.log('_onUnhighlight %s', this._isIntermediateState());
+    // console.log('_onUnhighlight %s', this._isIntermediateState());
     Animated.spring(                          // Base: spring, decay, timing
       this.state.bounceValue,                 // Animate `bounceValue`
       {
         toValue: 1.0,                         // Animate to smaller size
-        friction: 7,                          // Bouncier spring
+        friction: 1,                          // Bouncier spring
       }
     ).start();                                // Start the animation
   }  
   
   _startLoadingAnimation() {
-    console.log('_startLoadingAnimation %s', this._isIntermediateState());
+    console.log('_startLoadingAnimation %s', this.props.state);
 
     var animatedInital = 
       Animated.timing(   
@@ -98,7 +147,7 @@ class Button extends React.Component {
           animatedFinal,
           animatedInital,           
         ]);
-      
+            
     animated.start((result) => {
       // TODO: This may leak memory after unmount.
       if (this._isIntermediateState()) {
@@ -108,7 +157,7 @@ class Button extends React.Component {
   }
 
   render() {
-    console.log('render %s', this._isIntermediateState());
+    console.log('render %s', this.props.state);
     
     var buttonContent = 
         <Text style={{
@@ -121,7 +170,7 @@ class Button extends React.Component {
     
     return (
       <TouchableWithoutFeedback
-        onPress={this.props.onPress}
+        onPress={_.bind(this._onPress, this)}
         onPressOut={_.bind(this._onUnhighlight, this)}
         onPressIn={_.bind(this._onHighlight, this)}
         delayPressOut={1}
@@ -169,7 +218,7 @@ class Button extends React.Component {
                   })}, 
                   // {rotate: this.state.fadeAnim.interpolate({
                   //   inputRange: [0, 1],
-                  //   outputRange: ['360deg', '0deg'],
+                  //   outputRange: ['90deg', '0deg'],
                   // })}, 
                 ],           
             }}/>
