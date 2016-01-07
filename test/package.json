@@ -1,24 +1,21 @@
 {
-  "name": "roomfinder",
-  "version": "0.0.1",
-  "private": true,
+  "name": "redux1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node_modules/react-native/packager/packager.sh",
     "test": "mocha --compilers js:babel/register --recursive",
     "test:watch": "npm test -- --watch"
   },
   "author": "",
+  "license": "ISC",
   "devDependencies": {
     "babel-register": "^6.3.13",
     "mocha": "^2.3.4",
     "chai": "^3.4.1"
   },
   "dependencies": {
-    "react-native": "^0.18.0-rc",
-    "react-timer-mixin": "^0.13.3",
     "redux": "^3.0.5",
-    "sprintf-js": "^1.0.3",
-    "underscore": "^1.8.3",
-    "urlencode": "^1.1.0"
+    "underscore": "^1.8.3"
   }
 }

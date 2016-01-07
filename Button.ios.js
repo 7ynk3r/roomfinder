@@ -71,10 +71,11 @@ class Button extends React.Component {
   //   }    
   // } 
     
-  shouldComponentUpdate(nextProps, nextState) {
-    console.log("shouldComponentUpdate ", this.props.state != nextProps.state);
-    return this.props.state != nextProps.state;
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   // TODO: This should be defined by the data source.
+  //   // console.log("shouldComponentUpdate ", this.props.state != nextProps.state);
+  //   return this.props.state != nextProps.state;
+  // }
   
   // componentDidMount() {
   //   // console.log('componentDidMount ');

@@ -207,6 +207,7 @@ GoogleAPI.prototype = {
     var mins = 60000;
     var available = []; // return;
     
+    // TODO[CHECK]: 'busy' is being overrided.
     // create a new busy with dates
     busy = _.map(busy, (b) => {
       return {
