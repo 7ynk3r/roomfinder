@@ -1,13 +1,12 @@
 'use strict';
 
-export const logJSON = (json, msg='json') => console.log(`${msg}: ${JSON.stringify(json)} \n`) ;
-
 // import * as actions from './actions'
 import _ from 'underscore';
+import logJSON from '../../logJSON';
 import { GET_EVENTS, TAKE_EVENT, FREE_EVENT } from './actionTypes';
 import initialState, { createCalendar } from './initialState';
 
-export const calendar = (state = initialState, action = {}) => {
+export default (state = initialState, action = {}) => {
   const { type, ready, result, errors } = action;
   logJSON(action, 'action');
   
@@ -46,5 +45,3 @@ export const calendar = (state = initialState, action = {}) => {
   return state;
 }
 
-
-// export default calendar;

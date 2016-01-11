@@ -1,20 +1,16 @@
 'use strict';
 
 import '../../../_auto_mock_off';
+import logJSON from '../../../logJSON';
 
-import { calendar, hola } from '../reducer';
+import calendar from '../reducer';
 import { _getEvents, _takeEvent, _freeEvent } from '../actions';
 import { _makeReadyAction } from '../../common/actions';
 import { getSlotsResult } from '../../../__mocks__/googleapi.js';
 
+// Some states useful for testing.
 const calendar0 = calendar()
-
-const calendar4 = calendar(
-  calendar0, 
-  _makeReadyAction(_getEvents(), true, getSlotsResult));
-
-export const logJSON = (json) => console.log(`json: ${JSON.stringify(json)} \n`) ;
-
+const calendar4 = calendar(calendar0, _makeReadyAction(_getEvents(), true, getSlotsResult));
 
 describe('calendar reducer', () => {
 
