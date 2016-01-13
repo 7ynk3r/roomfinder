@@ -277,6 +277,4 @@ GoogleAPI.prototype = {
 
 }
 
-// module.exports = new GoogleAPI();
-export default new GoogleAPI();
-// export default () => {};
+module.exports = new GoogleAPI();

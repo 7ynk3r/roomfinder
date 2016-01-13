@@ -2,17 +2,18 @@
 
 import logJSON from '../logJSON'
 
+import React from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import { Map } from 'immutable';
-import React from 'react-native';
 
-import Calendar from './Calendar';
+import EventList from '../components/EventList'
 
-const actions = [];
+const actions = [
+];
 
 function mapStateToProps(state) {
-  return {
+  return {      
       ...state
   };
 };
@@ -30,7 +31,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-let App = React.createClass({
+let Calendar = React.createClass({
 
   // getInitialState() {
   //   return {};
@@ -43,12 +44,12 @@ let App = React.createClass({
   },
   
   render () {
-    let component = <Calendar />;
+    let component = <EventList calendar={this.props.calendar} />;
     return (
       component
     );
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(Calendar);
 
