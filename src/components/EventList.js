@@ -1,6 +1,7 @@
 'use strict';
 
 import logJSON from '../logJSON'
+import _ from 'underscore'
 
 var React = require('react-native');
 var {
@@ -16,11 +17,18 @@ export default React.createClass({
   // },
   
   componentDidMount() {
-    logJSON(this.props, '\n\n\n\n\nEventList.props');
+    logJSON('EventList.componentDidMount');
+    // logJSON(_.keys(this.props), '\n\n\n\n\nEventList.props');
+  },
+
+  componentWillReceiveProps(props) {
+    logJSON('EventList.componentWillReceiveProps');
   },
  
   render() {
-    let description = JSON.stringify(this.props);
+    logJSON('EventList.render');
+    let description = JSON.stringify(_.keys(this.props));
+    // logJSON(this.props.calendar);
     return (
       <View>
         <Text style={styles.section}>

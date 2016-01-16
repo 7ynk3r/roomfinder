@@ -20,7 +20,8 @@ export default (state = initialState, action = {}) => {
       else if (ready && errors) {
         state = state.merge({errors});
       }
-      return state.merge({ready});
+      state = state.merge({ready});
+      return state;
       
     case TAKE_EVENT:
     case FREE_EVENT:
@@ -29,7 +30,6 @@ export default (state = initialState, action = {}) => {
       const taken = type == TAKE_EVENT;
       let event = state.eventById.get(eventId);
       if (ready && result) {
-        // logJSON(event);
         const serverId = result.eventId !== undefined ? result.eventId : 0;
         event = event
           .delete(errors)
