@@ -10,6 +10,12 @@ import { _promiseActionThunk, _makeReadyAction} from '../common/actions.js'
 import getEventsMockData from '../../__mocks__/googleapi-org'
 
 
+
+const delay = time => new Promise(fulfill => {
+  setTimeout(fulfill, time);
+});
+
+
 export const _getEvents = () => {
   return {
     type: GET_EVENTS
@@ -17,7 +23,13 @@ export const _getEvents = () => {
 }
 
 export const _getEventsMock = () => {
-  return _makeReadyAction(_getEvents(), true, getEventsMockData);
+  // return _makeReadyAction(_getEvents(), true, getEventsMockData);
+
+  const action = _getEvents();
+  const timeMin = new Date(2015, 9, 9, 10, 0, 0, 0);
+  const timeMax = new Date(2015, 9, 9, 20, 0, 0, 0);
+  const promise = delay(2000).then(()=>Promise.resolve(getEventsMockData));
+  return _promiseActionThunk(promise, action);
 };
 
 

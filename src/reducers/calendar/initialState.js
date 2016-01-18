@@ -1,5 +1,6 @@
 'use strict';
 
+import logJSON from '../../logJSON';
 import _ from 'underscore';
 import { Record, List, Map } from 'immutable';
 
@@ -60,7 +61,11 @@ export const createCalendar = (events=[], slots=[], resources=[], ready=false) =
   // Convert to records
 
   events = _.map(events, e => new Event(e));
-  slots = _.map(slots, s => new Slot(s));
+  slots = _.map(slots, s => {
+    s.start = new Date(s.start);
+    s.end = new Date(s.end);
+    return new Slot(s);
+  });
   resources = _.map(resources, r => new Resource(r));
     
   // Create the entities

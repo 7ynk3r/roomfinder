@@ -9,6 +9,7 @@ import { connect } from 'react-redux/native';
 import { Map } from 'immutable';
 
 import EventList from '../components/EventList'
+import Loading from '../components/Loading'
 import * as calendarActions from '../reducers/calendar/actions';
 
 const actions = [
@@ -17,34 +18,17 @@ const actions = [
 
 
 const mapStateToProps = state => {  
-  return {      
-    ...state
-  };
-
   
-  const calendar = state.calendar.toJSON();
+  const calendar = state.calendar.toJS();
   const events = _.values(calendar.eventById);
   const eventsBySlotId = _.groupBy(events, 'slotId');
   const slotIds = _.sortBy(_.keys(eventsBySlotId), sid => calendar.slotById[sid].start);
   const slotEventIds = _.map(slotIds, sid => _.pluck(eventsBySlotId[sid], 'id'));
-  const x = { 'calendar' : {
+  logJSON(slotEventIds, 'mapStateToProps'); 
+  return { 'calendar' : {
     ...calendar, slotIds, slotEventIds
   }};
-  // logJSON(x, '\n\n\n\n\n\n<<<<<<')
-  return x;
   
-  // const x = state.calendar.toJSON();
-  // const events = _.values(x.eventById);
-  // const eventsBySlotId = _.groupBy(events, 'slotId');
-  // const calendar = _.map(x.slotIdx, sid => { 
-  //   const s = x.slotById[sid];
-  //   const slotEvents = eventsBySlotId[sid];
-  //   // TODO: The calendars must be sorted.
-  //   s.calendars = _.map(slotEvents, e => x.resourceById[e.resourceId]);
-  //   return s;
-  // });
-  // logJSON(calendar, 'calendar');
-  // return { calendar };  
 };
 
 const mapDispatchToProps = dispatch => {
@@ -79,9 +63,16 @@ let Calendar = React.createClass({
   
   render () {
     logJSON('Calendar.render');
-    let component = <EventList calendar={this.props.calendar} />;
+    const calendar = this.props.calendar;
+    // const ready = calendar.ready
+    // const component = ready 
+    //   ? <EventList calendar={calendar} />
+    //   : <Loading />;
+    // return (
+    //   component
+    // );
     return (
-      component
+      <EventList calendar={calendar} />
     );
   }
 });
