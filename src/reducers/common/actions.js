@@ -16,10 +16,6 @@ export const _makeReadyAction = (action, ready, result, errors) => {
   return Object.assign({}, action, { ready, result, errors })
 }
 
-// export const _errorMsg = message => {
-//   return { message };
-// }
-
 export const _promiseActionThunk = (promise, action, validate) => {
   return (dispatch, getState) => {
     // Validation

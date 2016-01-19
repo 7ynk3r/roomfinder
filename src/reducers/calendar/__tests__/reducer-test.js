@@ -88,7 +88,7 @@ describe('calendar reducer', () => {
 
   it('should complete taking an event', () => {
     const ready = true;
-    const result = { eventId : 'realEventId' };
+    const result = { id : 'eventId' };
     const resourceId = "medallia.com_3339353632343333323839@resource.calendar.google.com";
     const slotId = "1444424400000";
     const eventId = resourceId+"|"+slotId;

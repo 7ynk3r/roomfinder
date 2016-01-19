@@ -17,7 +17,7 @@ const Calendar = Record({
 });
 
 const Event = Record({
-  ready : false,
+  ready : true,
   errors : List(),
   id : '',
   slotId : 0,
@@ -49,7 +49,7 @@ const Resource = Record({
 export const createCalendar = (events=[], slots=[], resources=[], ready=false) => {
   var events = _.each(events, (e) => {
     e.id = e.resourceId + '|' + e.slotId;
-    e.taken = e.eventId !== undefined;
+    e.taken = (e.eventId || 0) > 0;
     if (e.taken) {
       e.serverId = e.eventId;
       delete e.eventId

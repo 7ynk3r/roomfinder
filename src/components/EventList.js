@@ -20,7 +20,7 @@ export default React.createClass({
         return headerData; 
       },
       getRowData : (dataBlob, sid, eid) => { 
-        logJSON('getRowData' );
+        // logJSON('getRowData' );
         const event = dataBlob.eventById[eid];
         const slot = dataBlob.slotById[event.slotId];
         const resource = dataBlob.resourceById[event.resourceId];
@@ -31,20 +31,25 @@ export default React.createClass({
         };
         return rowData; 
       },
-      rowHasChanged : (r1, r2) => { 
-        logJSON('rowHasChanged');
-        // const rowHasChanged 
-        //   = r1.slot.id !== r2.slot.id
-        //   || r1.resource.id !== r1.resource.id
-        //   || r1.reservation !== r2.reservation;
-        // return rowHasChanged;
-        return true;
-      },
       sectionHeaderHasChanged : (s1, s2) => { 
-        logJSON('sectionHeaderHasChanged');
-        // return s1.id !== s2.id;
-        return true;
-      }
+        const hasChanged = s1.id !== s2.id;
+        if (hasChanged) {
+          logJSON(hasChanged, 'sectionHeaderHasChanged');
+        }
+        return s1.id !== s2.id;
+      },
+      rowHasChanged : (r1, r2) => { 
+        const hasChanged 
+          =  r1.id !== r2.id
+          || r1.slotId !== r2.slotId
+          || r1.resourceId !== r2.resourceId
+          || r1.taken !== r2.taken
+          || r1.ready !== r2.ready;
+        if (hasChanged) {
+          logJSON(hasChanged, 'rowHasChanged');
+        }
+        return hasChanged;
+      },      
     });
     return {
       dataSource: ds.cloneWithRows([])
@@ -72,6 +77,7 @@ export default React.createClass({
  
   render() {
     logJSON('EventList.render');
+    let self = this;
     // logJSON(_.keys(this.props.calendar), '\n\n\n\n_.keys(this.props.calendar)');
     const ready = this.props.calendar.ready;
     if (!ready) {
@@ -81,7 +87,16 @@ export default React.createClass({
         </View>
       );
     }
+    
+    // Take/Free event.
+    const onPress = taken => taken ? this.props.onFreeEvent : this.props.onTakeEvent;
+    // const onPress = (taken) =>  {
+    //   return () => {
+    //     logJSON(taken, 'taken');
+    //   }
+    // }
 
+    // const _onPress = this._onPress;
     return (
       <ListView
         ref="listView"
@@ -93,15 +108,20 @@ export default React.createClass({
         renderSectionHeader = {(sectionData) =>
           <EventSection 
             style={styles.section}
-            slot={sectionData}/>
+            slot={sectionData}
+          />
         }
         renderRow = {(rowData) => 
           <EventRow 
             style={styles.row}
-            event={rowData}/>
-      }/>
+            event={rowData}
+            onPress={onPress(rowData.taken)}
+          />
+        }
+      />
     )
-  }
+  },
+    
 });
 
 var styles = StyleSheet.create({

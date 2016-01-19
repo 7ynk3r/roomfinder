@@ -22,17 +22,6 @@ export const _getEvents = () => {
   };
 }
 
-export const _getEventsMock = () => {
-  // return _makeReadyAction(_getEvents(), true, getEventsMockData);
-
-  const action = _getEvents();
-  const timeMin = new Date(2015, 9, 9, 10, 0, 0, 0);
-  const timeMax = new Date(2015, 9, 9, 20, 0, 0, 0);
-  const promise = delay(2000).then(()=>Promise.resolve(getEventsMockData));
-  return _promiseActionThunk(promise, action);
-};
-
-
 export const getEvents = () => {
   const action = _getEvents();
   const timeMin = new Date(2015, 9, 9, 10, 0, 0, 0);
@@ -49,7 +38,7 @@ export const _takeEvent = eventId => {
 }
 
 export const takeEvent = eventId => {
-  const action = _takeEvent(eventById);
+  const action = _takeEvent(eventId);
   const promise = undefined; // googleapi.insertEvent(calendarId, summary, start, end);
   return _promiseActionThunk(promise, action);
 }
@@ -62,7 +51,31 @@ export const _freeEvent = eventId => {
 }
 
 export const freeEvent = eventId => {
-  const action = _freeEvent(eventById);
+  const action = _freeEvent(eventId);
   const promise = undefined;
+  return _promiseActionThunk(promise, action);
+}
+
+
+// mocks
+
+export const _getEventsMock = () => {
+  const action = _getEvents();
+  const promise = delay(2000).then(()=>Promise.resolve(getEventsMockData));
+  return _promiseActionThunk(promise, action);
+};
+
+export const _takeEventMock = eventId => {
+  const action = _takeEvent(eventId);
+  const result = { id : 1 };
+  const promise = delay(2000).then(()=>Promise.resolve(result));
+  return _promiseActionThunk(promise, action);
+}
+
+export const _freeEventMock = eventId => {
+  const action = _freeEvent(eventId);
+  const result = { id : 0 };
+  logJSON(result, '<<<<');
+  const promise = delay(2000).then(()=>Promise.resolve(result));
   return _promiseActionThunk(promise, action);
 }

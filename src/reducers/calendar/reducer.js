@@ -1,6 +1,5 @@
 'use strict';
 
-// import * as actions from './actions'
 import _ from 'underscore';
 import logJSON from '../../logJSON';
 import { GET_EVENTS, TAKE_EVENT, FREE_EVENT } from './actionTypes';
@@ -27,10 +26,11 @@ export default (state = initialState, action = {}) => {
     case FREE_EVENT:
       
       const { eventId } = action;
-      const taken = type == TAKE_EVENT;
       let event = state.eventById.get(eventId);
       if (ready && result) {
-        const serverId = result.eventId !== undefined ? result.eventId : 0;
+        logJSON(result, '>>>result')
+        const serverId = result.id;
+        const taken = (serverId||0) > 0;
         event = event
           .delete(errors)
           .merge({taken, serverId});

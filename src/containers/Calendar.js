@@ -64,6 +64,7 @@ let Calendar = React.createClass({
   render () {
     logJSON('Calendar.render');
     const calendar = this.props.calendar;
+    const actions = this.props.actions;
     // const ready = calendar.ready
     // const component = ready 
     //   ? <EventList calendar={calendar} />
@@ -72,7 +73,10 @@ let Calendar = React.createClass({
     //   component
     // );
     return (
-      <EventList calendar={calendar} />
+      <EventList 
+        calendar={calendar}
+        onTakeEvent={actions._takeEventMock}
+        onFreeEvent={actions._freeEventMock}/>
     );
   }
 });
