@@ -13,6 +13,7 @@ import React, { StyleSheet, View, ListView } from 'react-native';
 export default React.createClass({
   
   getInitialState() {
+    logJSON('EventList.getInitialState')
     // http://moduscreate.com/react-native-listview-with-section-headers/
     const ds = new ListView.DataSource({
       getSectionHeaderData : (dataBlob, sid) => { 
@@ -58,6 +59,7 @@ export default React.createClass({
     
   componentDidMount() {
     logJSON('EventList.componentDidMount');
+    this.componentWillReceiveProps(this.props);
   },
 
   componentWillReceiveProps(props) {
@@ -80,31 +82,26 @@ export default React.createClass({
     let self = this;
     // logJSON(_.keys(this.props.calendar), '\n\n\n\n_.keys(this.props.calendar)');
     const ready = this.props.calendar.ready;
-    if (!ready) {
-      return (
-        <View style={styles.container}>
-          <Loading/>
-        </View>
-      );
-    }
+    // if (!ready) {
+    //   return (
+    //     <View style={{'flex':1}}>
+    //       <Loading/>
+    //     </View>
+    //   );
+    // }
     
     // Take/Free event.
-    const onPress = taken => taken ? this.props.onFreeEvent : this.props.onTakeEvent;
-    // const onPress = (taken) =>  {
-    //   return () => {
-    //     logJSON(taken, 'taken');
-    //   }
-    // }
+    const noop = () => console.log('noop');
+    const onPress = (ready, taken) => !ready ? noop : taken ? this.props.onFreeEvent : this.props.onTakeEvent;
 
-    // const _onPress = this._onPress;
     return (
       <ListView
         ref="listView"
-        initialListSize={50}
+        // initialListSize={20}
         dataSource={this.state.dataSource}
-        automaticallyAdjustContentInsets={false}
-        keyboardShouldPersistTaps={true}
-        showsVerticalScrollIndicator={false}
+        // automaticallyAdjustContentInsets={false}
+        // keyboardShouldPersistTaps={true}
+        // showsVerticalScrollIndicator={false}
         renderSectionHeader = {(sectionData) =>
           <EventSection 
             style={styles.section}
@@ -115,7 +112,7 @@ export default React.createClass({
           <EventRow 
             style={styles.row}
             event={rowData}
-            onPress={onPress(rowData.taken)}
+            onPress={onPress(rowData.ready, rowData.taken)}
           />
         }
       />
@@ -134,7 +131,7 @@ var styles = StyleSheet.create({
   section : {
     padding: 15,
     // marginTop: 16,
-    marginBottom: 1,
+    marginBottom: 2,
     color: 'white',
     backgroundColor : 'gray',
     fontWeight: 'bold',
@@ -142,13 +139,13 @@ var styles = StyleSheet.create({
   },
   row : {
     padding: 15,
-    marginTop: 1,
-    marginBottom: 1,
-    margin: 5,
-    borderRadius: 10,
+    // marginTop: 1,
+    marginBottom: 2,
+    // margin: 5,
+    // borderRadius: 10,
     // height: 20,
     // height:50,
-    borderRadius: 5,
-    margin: 5,
+    // borderRadius: 5,
+    // margin: 5,        
   },
 });

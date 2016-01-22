@@ -7,7 +7,10 @@ import React, { ActivityIndicatorIOS,  } from 'react-native';
 export default class extends React.Component {
   render() {
     return (
-      <ActivityIndicatorIOS size='large'/>
+      <ActivityIndicatorIOS 
+        // color='white'
+        style={this.props.style}
+        size='large'/>
     );
   }
 }

@@ -61,7 +61,7 @@ export const freeEvent = eventId => {
 
 export const _getEventsMock = () => {
   const action = _getEvents();
-  const promise = delay(2000).then(()=>Promise.resolve(getEventsMockData));
+  const promise = delay(200).then(()=>Promise.resolve(getEventsMockData));
   return _promiseActionThunk(promise, action);
 };
 

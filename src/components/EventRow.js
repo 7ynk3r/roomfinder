@@ -3,7 +3,13 @@
 import logJSON from '../logJSON'
 import _ from 'underscore'
 
-import React, { Text, TouchableWithoutFeedback } from 'react-native';
+import React, { 
+  View, 
+  Text, 
+  TouchableWithoutFeedback, 
+  ActivityIndicatorIOS,
+  StyleSheet
+} from 'react-native';
 
 export default class extends React.Component {
 
@@ -36,27 +42,32 @@ export default class extends React.Component {
   }
 
   render() {
-    const self = this;
     const style = this.props.style;
     const event = this.props.event;
     const title = event.resource.summary;
-    // logJSON(event, '\n\n\n\nevent');
+    // styles
     const backgroundColor = event.resource.backgroundColor;
-    const textAlign = !event.ready ? 'center' : event.taken ? 'right' : 'left';
+    const textAlign = 'left'; //!event.ready ? 'center' : event.taken ? 'right' : 'left';
+    const flexDirection = 'row';
+    const state = !event.ready ? '[...]' : event.taken ? '[taken]' : '[free]';
+    // events
     const onPress = () => {
-      logJSON('onPress');
-      logJSON(self.props, 'self');
-      logJSON(self.props.onPress, 'self.props.onPress');
-      self.props.onPress(event.id);
+      this.props.onPress(event.id);
     }
 
     return (
-      <TouchableWithoutFeedback onPress={onPress.bind(self)}>
-        <Text style={[style, { backgroundColor, textAlign }]}>
-          {title}
-        </Text>
+      <TouchableWithoutFeedback onPress={onPress}>
+        <View style={[style, { backgroundColor, flexDirection }]}>
+          <Text style={{'flex':1}}>
+            {title}
+          </Text>
+          <Text>
+            {state}
+          </Text>
+        </View>
       </TouchableWithoutFeedback>
     );
   }
 
 };
+
