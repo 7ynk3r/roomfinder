@@ -101,18 +101,25 @@ export default React.createClass({
         dataSource={this.state.dataSource}
         // automaticallyAdjustContentInsets={false}
         // keyboardShouldPersistTaps={true}
-        // showsVerticalScrollIndicator={false}
-        renderSectionHeader = {(sectionData) =>
+        showsVerticalScrollIndicator={false}
+        // style={{backgroundColor:'white'}}
+        renderSectionHeader = {(sectionData, sectionID) =>
           <EventSection 
             style={styles.section}
             slot={sectionData}
           />
         }
-        renderRow = {(rowData) => 
+        renderRow = {(rowData, sectionID, rowID, highlightRow) => 
           <EventRow 
-            style={styles.row}
+            style={[styles.row]}
             event={rowData}
             onPress={onPress(rowData.ready, rowData.taken)}
+          />
+        }
+        renderSeparator = {(rowData, sectionID, rowID, highlightRow) =>
+          <View 
+            style={[{height:1,backgroundColor:'ghostwhite'}]}
+            key={sectionID+rowID}
           />
         }
       />
@@ -129,23 +136,11 @@ var styles = StyleSheet.create({
     marginTop: 20,
   },
   section : {
-    padding: 15,
-    // marginTop: 16,
-    marginBottom: 2,
-    color: 'white',
-    backgroundColor : 'gray',
-    fontWeight: 'bold',
-    textAlign: 'center'
+    padding: 10,
   },
   row : {
     padding: 15,
-    // marginTop: 1,
-    marginBottom: 2,
-    // margin: 5,
-    // borderRadius: 10,
-    // height: 20,
-    // height:50,
-    // borderRadius: 5,
-    // margin: 5,        
-  },
+    // borderBottomWidth: 1,
+    // borderColor: 'white',
+  },  
 });

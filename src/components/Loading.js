@@ -8,7 +8,7 @@ export default class extends React.Component {
   render() {
     return (
       <ActivityIndicatorIOS 
-        // color='white'
+        color='white'
         style={this.props.style}
         size='large'/>
     );

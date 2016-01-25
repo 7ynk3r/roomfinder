@@ -86,7 +86,7 @@ let Calendar = React.createClass({
         </View>
 
     return (
-      <View style={{flex:1,backgroundColor : 'white'}}>
+      <View style={{flex:1,backgroundColor : 'gray'}}>
         { component }
       </View>
     );

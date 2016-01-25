@@ -3,7 +3,7 @@
 import logJSON from '../logJSON'
 import _ from 'underscore'
 
-import React, { Text } from 'react-native';
+import React, { View, Text } from 'react-native';
 
 export default React.createClass({
   getInitialState() {
@@ -22,11 +22,16 @@ export default React.createClass({
   render() {
     const style = this.props.style;
     const slot = this.props.slot;
-    logJSON(slot.start, 'slot.start');
     return (
-      <Text style={style}>
-        {slot.start.toLocaleTimeString() + ' - ' + slot.end.toLocaleTimeString()}
-      </Text>    
+      <View style={style}>
+        <Text style={{ 
+          color: 'white',
+          fontWeight: 'bold',
+          textAlign: 'center'
+        }}>
+          {slot.start.toString('h:mmTT') + ' - ' + slot.end.toString('h:mmTT')}
+        </Text>    
+      </View>
     );
   }
 

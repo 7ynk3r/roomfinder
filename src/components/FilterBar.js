@@ -21,13 +21,15 @@ export default class extends React.Component {
   render() {
     return (
       <View style={{
-        backgroundColor:'gray',
-        // borderBottomColor: 'white',
-        // borderBottomWidth: 1,
+        borderBottomColor:'darkgray',
+        borderBottomWidth: 1,
       }}>
         <SegmentedControlIOS 
           tintColor='white'
-          style={{margin:5, marginTop:20, marginBottom:0}}
+          style={{
+            margin:10, 
+            marginTop:25, 
+          }}
           values={['30\'','60\'']}/>
       </View>
     );

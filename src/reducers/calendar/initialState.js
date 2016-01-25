@@ -2,6 +2,7 @@
 
 import logJSON from '../../logJSON';
 import _ from 'underscore';
+import XDate from 'xdate'
 import { Record, List, Map } from 'immutable';
 
 // Records
@@ -62,8 +63,8 @@ export const createCalendar = (events=[], slots=[], resources=[], ready=false) =
 
   events = _.map(events, e => new Event(e));
   slots = _.map(slots, s => {
-    s.start = new Date(s.start);
-    s.end = new Date(s.end);
+    s.start = new XDate(s.start);
+    s.end = new XDate(s.end);
     return new Slot(s);
   });
   resources = _.map(resources, r => new Resource(r));
