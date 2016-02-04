@@ -2,7 +2,7 @@
 
 import logJSON from '../../logJSON'
 
-import { GET_EVENTS, TAKE_EVENT, FREE_EVENT } from './actionTypes';
+import { GET_EVENTS, TAKE_EVENT, FREE_EVENT, CHANGE_SLOT_SIZE } from './actionTypes';
 // import googleapi from '../../lib/googleapi'
 import { _promiseActionThunk, _makeReadyAction} from '../common/actions.js'
 // import secret from  require('./secret');
@@ -57,11 +57,25 @@ export const freeEvent = eventId => {
 }
 
 
+export const changeSlotSize = slotSize => {
+  return {
+    type: CHANGE_SLOT_SIZE,
+    slotSize
+  };
+}
+
+// export const changeSlotSize = slotSize => {
+//   const action = _changeSlotSize(slotSize);
+//   const promise = undefined;
+//   return _promiseActionThunk(promise, action);
+// }
+
+
 // mocks
 
 export const _getEventsMock = () => {
   const action = _getEvents();
-  const promise = delay(200).then(()=>Promise.resolve(getEventsMockData));
+  const promise = delay(100).then(()=>Promise.resolve(getEventsMockData));
   return _promiseActionThunk(promise, action);
 };
 

@@ -59,11 +59,18 @@ export default React.createClass({
     
   componentDidMount() {
     logJSON('EventList.componentDidMount');
+    // Initial load.
+    this.props.onGetEvents();
     this.componentWillReceiveProps(this.props);
   },
 
   componentWillReceiveProps(props) {
     logJSON('EventList.componentWillReceiveProps');
+    
+    // If the slot size changed we re-load.
+    if (this.props.calendar.slotSize !== props.calendar.slotSize) {
+      this.props.onGetEvents();
+    }
 
     const dataBlob = props.calendar;
     const rows = dataBlob.slotEventIds;
@@ -71,7 +78,8 @@ export default React.createClass({
     const dataSource = this.state.dataSource.cloneWithRowsAndSections(
         dataBlob, 
         sections, 
-        rows)
+        rows);
+    
     this.setState({ 
       dataSource
     });
@@ -79,16 +87,12 @@ export default React.createClass({
  
   render() {
     logJSON('EventList.render');
-    let self = this;
-    // logJSON(_.keys(this.props.calendar), '\n\n\n\n_.keys(this.props.calendar)');
+    const self = this;
     const ready = this.props.calendar.ready;
-    // if (!ready) {
-    //   return (
-    //     <View style={{'flex':1}}>
-    //       <Loading/>
-    //     </View>
-    //   );
-    // }
+    
+    if (!ready) {
+      return (<Loading style={{flex:1}}/>);
+    }
     
     // Take/Free event.
     const noop = () => console.log('noop');
@@ -118,7 +122,7 @@ export default React.createClass({
         }
         renderSeparator = {(rowData, sectionID, rowID, highlightRow) =>
           <View 
-            style={[{height:1,backgroundColor:'ghostwhite'}]}
+            style={[{marginLeft:20, height:1,backgroundColor:'transparent'}]}
             key={sectionID+rowID}
           />
         }
@@ -136,10 +140,19 @@ var styles = StyleSheet.create({
     marginTop: 20,
   },
   section : {
-    padding: 10,
+    paddingTop: 15,
+    padding: 5,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   row : {
     padding: 15,
+    paddingLeft: 16,
+    paddingRight: 20,
+    marginLeft: 20,
+    backgroundColor: '#393E46',
+    borderLeftWidth:4,
+    // color: '#333333',
     // borderBottomWidth: 1,
     // borderColor: 'white',
   },  

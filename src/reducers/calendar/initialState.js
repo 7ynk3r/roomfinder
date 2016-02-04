@@ -12,9 +12,10 @@ const Calendar = Record({
   errors : List(),
   eventById : Map(), // Event record
   slotById : Map(), // Slot record
-  resourceById : Map() // Resource record
-  // slotIdx : List(), 
-  // resourceIdx : List()
+  resourceById : Map(), // Resource record
+  
+  slotSizes : List([15,30,45]),
+  slotSize : 15  
 });
 
 const Event = Record({
@@ -77,7 +78,7 @@ export const createCalendar = (events=[], slots=[], resources=[], ready=false) =
   // const slotIdx       = List(_.pluck(_.sortBy(slots, 'start'), 'id'));
   // const resourceIdx   = List(_.pluck(_.sortBy(resources, 'start'), 'id'));
 
-  return new Calendar({
+  const cal = new Calendar({
     ready,
     eventById, 
     slotById, 
@@ -85,6 +86,10 @@ export const createCalendar = (events=[], slots=[], resources=[], ready=false) =
     // slotIdx, 
     // resourceIdx 
   });
+  
+  //logJSON(cal, 'xxxxxx');
+  
+  return cal;
 }
 
 const initialState = createCalendar();

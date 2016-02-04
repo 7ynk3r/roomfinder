@@ -3,7 +3,7 @@
 import logJSON from '../logJSON'
 import _ from 'underscore'
 
-import React, { View, StatusBarIOS } from 'react-native';
+import React, { View, StatusBarIOS, StyleSheet } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import { Map } from 'immutable';
@@ -26,15 +26,17 @@ const mapStateToProps = state => {
   const eventsBySlotId = _.groupBy(events, 'slotId');
   const slotIds = _.sortBy(_.keys(eventsBySlotId), sid => calendar.slotById[sid].start);
   const slotEventIds = _.map(slotIds, sid => _.pluck(eventsBySlotId[sid], 'id'));
-  logJSON(slotEventIds, 'mapStateToProps'); 
+  const slotSizes = calendar.slotSizes;
+  const slotSize = calendar.slotSize;
+  // logJSON(slotSizes, 'xxxxxxxx'); 
   return { 'calendar' : {
-    ...calendar, slotIds, slotEventIds
+    ...calendar, slotIds, slotEventIds, slotSizes, slotSize
   }};
   
 };
 
 const mapDispatchToProps = dispatch => {
-  logJSON(_.keys(actions[0]));
+  // logJSON(_.keys(actions[0]));
   const creators = Map()
           .merge(...actions)
           .filter(value => typeof value === 'function')
@@ -54,19 +56,19 @@ let Calendar = React.createClass({
 
   componentWillReceiveProps(props) {
     logJSON('Calendar.componentWillReceiveProps');
+    
   },
   
   componentWillMount() {
     logJSON('Calendar.componentWillMount');
     StatusBarIOS.setStyle('light-content');
-    // StatusBarIOS.setStyle('default');
   },
 
   componentDidMount() {
     logJSON('Calendar.componentDidMount');
     // this.actions.getEventsMock();
     // logJSON(_.keys(this.props.actions), '\n\n\n\nthis.actions ');
-    this.props.actions._getEventsMock();
+    // this.props.actions._getEventsMock();
   },
   
   render () {
@@ -74,23 +76,27 @@ let Calendar = React.createClass({
     const calendar = this.props.calendar;
     const actions = this.props.actions;
     const ready = calendar.ready
-    const component = !ready 
-      ? <Loading style={{flex:1}}/>
-      : <View style={{flex:1}}>
-          <FilterBar />
-          <EventList 
-            style={{flex:1}}
-            calendar={calendar}
-            onTakeEvent={actions._takeEventMock}
-            onFreeEvent={actions._freeEventMock}/>
-        </View>
 
     return (
-      <View style={{flex:1,backgroundColor : 'gray'}}>
-        { component }
+      <View style={{flex:1,backgroundColor : '#222831'}}>
+        <FilterBar 
+          slotSizes={calendar.slotSizes}
+          slotSize={calendar.slotSize}
+          onChangeEventSize={actions.changeSlotSize}
+        />
+        <EventList 
+          style={{flex:1}}
+          calendar={calendar}
+          onGetEvents={actions._getEventsMock}
+          onTakeEvent={actions._takeEventMock}
+          onFreeEvent={actions._freeEventMock}
+        />
       </View>
     );
   }
+});
+
+var styles = StyleSheet.create({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

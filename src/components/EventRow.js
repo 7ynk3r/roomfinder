@@ -45,23 +45,42 @@ export default class extends React.Component {
     const style = this.props.style;
     const event = this.props.event;
     const title = event.resource.summary;
+    const state = !event.ready ? '...' : event.taken ? 'TAKEN' : 'FREE';
     // styles
-    const backgroundColor = event.resource.backgroundColor;
-    const textAlign = 'left'; //!event.ready ? 'center' : event.taken ? 'right' : 'left';
+    const borderColor = event.resource.backgroundColor;
+    const textAlign = 'left'; 
     const flexDirection = 'row';
-    const state = !event.ready ? '[...]' : event.taken ? '[taken]' : '[free]';
+    const eventColor = '#EEEEEE';
+    const actionColor = event.taken ? '#00ADB5' : '#EEEEEE';
+    // const actionColor = event.taken ? '#00ADB5' : '#EB586F';
+    
+    
     // events
     const onPress = () => {
       this.props.onPress(event.id);
     }
+    
+    // const image = !event.ready ? <View/> :
+    //   <Image
+    //     style={{
+    //       width: 30,
+    //       height: 30,
+    //       backgroundColor: 'white',
+    //       borderRadius: 15,
+    //       borderWidth: 1,
+    //       borderColor: color,
+    //     }}          
+    //     source={{uri}}
+    //   />;
+
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View style={[style, { backgroundColor, flexDirection }]}>
-          <Text style={{'flex':1}}>
+        <View style={[style, { borderColor, flexDirection }]}>
+          <Text style={{'flex':1, color:eventColor}}>
             {title}
           </Text>
-          <Text>
+          <Text style={{color:actionColor, borderWidth:1, borderRadius:3, borderColor:actionColor, paddingLeft:9, paddingTop:3, paddingRight:6, fontSize:11}}>
             {state}
           </Text>
         </View>

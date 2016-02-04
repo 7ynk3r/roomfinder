@@ -25,9 +25,9 @@ export default React.createClass({
     return (
       <View style={style}>
         <Text style={{ 
-          color: 'white',
-          fontWeight: 'bold',
-          textAlign: 'center'
+          color: '#EEEEEE',
+          // fontWeight: 'bold',
+          textAlign: 'left'
         }}>
           {slot.start.toString('h:mmTT') + ' - ' + slot.end.toString('h:mmTT')}
         </Text>    
