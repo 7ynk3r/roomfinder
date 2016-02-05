@@ -8,7 +8,8 @@ import React, {
   Text, 
   TouchableWithoutFeedback, 
   ActivityIndicatorIOS,
-  StyleSheet
+  StyleSheet,
+  LayoutAnimation,
 } from 'react-native';
 
 export default class extends React.Component {
@@ -20,6 +21,15 @@ export default class extends React.Component {
       final:2,
     };
   }
+  
+  constructor(props: any) {
+    super(props);
+    // this.componentWillReceiveProps(props);
+    // console.log('constructor %s', this._isIntermediateState());
+    // this.componentWillReceiveProps(props);
+    // this.state = { w: 0, h: 0 };
+  }
+
   
   _isInitialState() { 
     return this.props.state === Button.states.initial; 
@@ -38,6 +48,7 @@ export default class extends React.Component {
   }
 
   componentWillReceiveProps(props) {
+    LayoutAnimation.spring();
     logJSON('EventRow.componentWillReceiveProps');
   }
 
@@ -46,9 +57,11 @@ export default class extends React.Component {
     const event = this.props.event;
     const title = event.resource.summary;
     const state = !event.ready ? '...' : event.taken ? 'TAKEN' : 'FREE';
+    
     // styles
+    const width = state.length * 11;
     const borderColor = event.resource.backgroundColor;
-    const textAlign = 'left'; 
+    const textAlign = 'center'; 
     const flexDirection = 'row';
     const eventColor = '#EEEEEE';
     const actionColor = event.taken ? '#00ADB5' : '#EEEEEE';
@@ -60,19 +73,6 @@ export default class extends React.Component {
       this.props.onPress(event.id);
     }
     
-    // const image = !event.ready ? <View/> :
-    //   <Image
-    //     style={{
-    //       width: 30,
-    //       height: 30,
-    //       backgroundColor: 'white',
-    //       borderRadius: 15,
-    //       borderWidth: 1,
-    //       borderColor: color,
-    //     }}          
-    //     source={{uri}}
-    //   />;
-
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
@@ -80,9 +80,24 @@ export default class extends React.Component {
           <Text style={{'flex':1, color:eventColor}}>
             {title}
           </Text>
-          <Text style={{color:actionColor, borderWidth:1, borderRadius:3, borderColor:actionColor, paddingLeft:9, paddingTop:3, paddingRight:6, fontSize:11}}>
-            {state}
-          </Text>
+          <View 
+            style={{
+              borderWidth:1, 
+              borderRadius:3, 
+              borderColor:actionColor, 
+              padding:3, 
+              paddingLeft:6, 
+              paddingRight:6, 
+          }}>
+            <Text 
+              style={{
+                textAlign,
+                color:actionColor, 
+                fontSize:11,
+              }}>
+              {state}
+            </Text>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     );

@@ -1,3 +1,5 @@
+// TODO: Relojito, button actions names and transitions, crashlytics + google analytics.
+
 'use strict';
 
 import logJSON from '../logJSON'
