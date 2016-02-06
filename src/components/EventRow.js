@@ -12,65 +12,121 @@ import React, {
   LayoutAnimation,
 } from 'react-native';
 
-export default class extends React.Component {
+export default class EventRow extends React.Component {
 
-  static get states() {
-    return {
-      initial:0,
-      intermediate:1,
-      final:2,
-    };
-  }
-  
   constructor(props: any) {
+    logJSON('EventRow.constructor');
     super(props);
+    
+    var GET = 'GET';
+    var TAKE = 'TAKE';
+    var DROP = 'DROP';
+    var RELEASE = 'RELEASE';
+    var PROCESSING = 'PROCESSING';
+    
+    this.status = {
+      GET,
+      TAKE,
+      DROP,
+      RELEASE,
+      PROCESSING,
+    }
+    
+    this.statusColor = {
+      GET:'80D6FF',
+      TAKE:'95E1D3',
+      DROP:'EDF798',
+      RELEASE:'F06868',
+      PROCESSING:'EEEEEE',
+    };
+
+    this.statusText = {
+      GET:'GET',
+      TAKE:'TAKE',
+      DROP:'DROP',
+      RELEASE:'RELEASE',
+      PROCESSING:'...',
+    };
+        
     // this.componentWillReceiveProps(props);
     // console.log('constructor %s', this._isIntermediateState());
     // this.componentWillReceiveProps(props);
-    // this.state = { w: 0, h: 0 };
-  }
-
-  
-  _isInitialState() { 
-    return this.props.state === Button.states.initial; 
+    this.state = this.calculateState();
   }
   
-  _isIntermediateState() { 
-    return this.props.state === Button.states.intermediate; 
-  }
+  // _isInitialState() { 
+  //   return this.props.state === Button.states.initial; 
+  // }
   
-  _isFinalState() { 
-    return this.props.state === Button.states.final; 
-  }
+  // _isIntermediateState() { 
+  //   return this.props.state === Button.states.intermediate; 
+  // }
+  
+  // _isFinalState() { 
+  //   return this.props.state === Button.states.final; 
+  // }
   
   componentDidMount() {
     logJSON('EventRow.componentDidMount');
+    this.setState(this.calculateState(this.props));
   }
 
   componentWillReceiveProps(props) {
+    
+    this.setState(this.calculateState(props));
     LayoutAnimation.spring();
     logJSON('EventRow.componentWillReceiveProps');
   }
-
+  
+  calculateState(props) {
+    logJSON('EventRow.calculateState');
+    var buttonStatus = this.status.GET;
+    if (props) {
+      logJSON(event, 'xxxxx');
+      const event = props.event;
+      buttonStatus = !event.ready ? this.status.PROCESSING : event.taken ? this.status.DROP : this.status.GET;
+    }
+    
+    logJSON(buttonStatus, 'yyyyyyy');
+    return {
+      buttonStatus,
+    };
+    
+  }
+  
   render() {
+    logJSON('EventRow.render');
+
     const style = this.props.style;
     const event = this.props.event;
     const title = event.resource.summary;
-    const state = !event.ready ? '...' : event.taken ? 'TAKEN' : 'FREE';
+    const status = this.state.buttonStatus;
+    const statusText = this.statusText[status];
     
     // styles
-    const width = state.length * 11;
+    const width = status.length * 11;
     const borderColor = event.resource.backgroundColor;
     const textAlign = 'center'; 
     const flexDirection = 'row';
     const eventColor = '#EEEEEE';
-    const actionColor = event.taken ? '#00ADB5' : '#EEEEEE';
-    // const actionColor = event.taken ? '#00ADB5' : '#EB586F';
-    
-    
+    // const actionColor = status === "GET" ? 'blue' : status === "..." ? 'yellow' : 'green';
+    const actionColor = this.statusColor[status];
+    logJSON(status, 'actionColoractionColor')
+    logJSON(actionColor, 'actionColoractionColor')
+      
     // events
     const onPress = () => {
-      this.props.onPress(event.id);
+      if (status == this.status.GET) {
+        LayoutAnimation.spring();
+        this.setState({buttonStatus:this.status.TAKE});
+      }
+      else if (status == this.status.DROP) {
+        LayoutAnimation.spring();
+        this.setState({buttonStatus:this.status.RELEASE});
+      }
+      else {
+        this.props.onPress(event.id);
+      }
     }
     
 
@@ -95,7 +151,7 @@ export default class extends React.Component {
                 color:actionColor, 
                 fontSize:11,
               }}>
-              {state}
+              { statusText }
             </Text>
           </View>
         </View>
