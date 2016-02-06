@@ -48,23 +48,8 @@ export default class EventRow extends React.Component {
       PROCESSING:'...',
     };
         
-    // this.componentWillReceiveProps(props);
-    // console.log('constructor %s', this._isIntermediateState());
-    // this.componentWillReceiveProps(props);
     this.state = this.calculateState();
   }
-  
-  // _isInitialState() { 
-  //   return this.props.state === Button.states.initial; 
-  // }
-  
-  // _isIntermediateState() { 
-  //   return this.props.state === Button.states.intermediate; 
-  // }
-  
-  // _isFinalState() { 
-  //   return this.props.state === Button.states.final; 
-  // }
   
   componentDidMount() {
     logJSON('EventRow.componentDidMount');
@@ -131,11 +116,11 @@ export default class EventRow extends React.Component {
     
 
     return (
-      <TouchableWithoutFeedback onPress={onPress}>
-        <View style={[style, { borderColor, flexDirection }]}>
-          <Text style={{'flex':1, color:eventColor}}>
-            {title}
-          </Text>
+      <View style={[style, { borderColor, flexDirection }]}>
+        <Text style={{'flex':1, color:eventColor}}>
+          {title}
+        </Text>
+        <TouchableWithoutFeedback onPress={onPress}>
           <View 
             style={{
               borderWidth:1, 
@@ -154,8 +139,8 @@ export default class EventRow extends React.Component {
               { statusText }
             </Text>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </View>
     );
   }
 
