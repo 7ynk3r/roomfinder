@@ -47,67 +47,66 @@ export default class EventRow extends React.Component {
       RELEASE:'RELEASE',
       PROCESSING:'...',
     };
+
+    this.statusNext = {
+      GET:TAKE,
+      DROP:RELEASE,
+    }
         
-    this.state = this.calculateState();
+    this.changeStatus(this.status.GET);
   }
   
   componentDidMount() {
     logJSON('EventRow.componentDidMount');
-    this.setState(this.calculateState(this.props));
+    this.changeStatus(this.statusFromProps(this.props), false);
   }
 
   componentWillReceiveProps(props) {
-    
-    this.setState(this.calculateState(props));
-    LayoutAnimation.spring();
     logJSON('EventRow.componentWillReceiveProps');
+    this.changeStatus(this.statusFromProps(props), true);
   }
   
-  calculateState(props) {
-    logJSON('EventRow.calculateState');
-    var buttonStatus = this.status.GET;
-    if (props) {
-      logJSON(event, 'xxxxx');
-      const event = props.event;
-      buttonStatus = !event.ready ? this.status.PROCESSING : event.taken ? this.status.DROP : this.status.GET;
+  statusFromProps(props) {
+    const event = props.event;
+    return !event.ready ? this.status.PROCESSING : event.taken ? this.status.DROP : this.status.GET;
+  }
+  
+  changeStatus(status, animated) {
+    const state = { buttonStatus:status };
+    if (!this.state) {
+      this.state = state;
     }
-    
-    logJSON(buttonStatus, 'yyyyyyy');
-    return {
-      buttonStatus,
-    };
-    
+    else {
+      this.setState(state);
+    }
+    if (animated) {
+      LayoutAnimation.spring();
+    }
   }
   
   render() {
     logJSON('EventRow.render');
 
-    const style = this.props.style;
     const event = this.props.event;
     const title = event.resource.summary;
     const status = this.state.buttonStatus;
     const statusText = this.statusText[status];
     
     // styles
+    const style = this.props.style;
     const width = status.length * 11;
     const borderColor = event.resource.backgroundColor;
     const textAlign = 'center'; 
     const flexDirection = 'row';
     const eventColor = '#EEEEEE';
-    // const actionColor = status === "GET" ? 'blue' : status === "..." ? 'yellow' : 'green';
     const actionColor = this.statusColor[status];
-    logJSON(status, 'actionColoractionColor')
-    logJSON(actionColor, 'actionColoractionColor')
       
     // events
     const onPress = () => {
-      if (status == this.status.GET) {
-        LayoutAnimation.spring();
-        this.setState({buttonStatus:this.status.TAKE});
-      }
-      else if (status == this.status.DROP) {
-        LayoutAnimation.spring();
-        this.setState({buttonStatus:this.status.RELEASE});
+      const nextStatus = this.statusNext[status];
+      logJSON(nextStatus, 'nextStatusnextStatus');
+      if (nextStatus) {
+        this.changeStatus(nextStatus, true);
       }
       else {
         this.props.onPress(event.id);
