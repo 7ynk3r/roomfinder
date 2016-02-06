@@ -11,8 +11,10 @@ import React, {
   StyleSheet,
   LayoutAnimation,
 } from 'react-native';
+import TimerMixin from 'react-timer-mixin';
+import reactMixin from 'react-mixin';
 
-export default class EventRow extends React.Component {
+class EventRow extends React.Component {
 
   constructor(props: any) {
     logJSON('EventRow.constructor');
@@ -72,7 +74,7 @@ export default class EventRow extends React.Component {
   }
   
   changeStatus(status, animated) {
-    const state = { buttonStatus:status };
+    const state = { status:status };
     if (!this.state) {
       this.state = state;
     }
@@ -89,7 +91,7 @@ export default class EventRow extends React.Component {
 
     const event = this.props.event;
     const title = event.resource.summary;
-    const status = this.state.buttonStatus;
+    const status = this.state.status;
     const statusText = this.statusText[status];
     
     // styles
@@ -107,6 +109,15 @@ export default class EventRow extends React.Component {
       logJSON(nextStatus, 'nextStatusnextStatus');
       if (nextStatus) {
         this.changeStatus(nextStatus, true);
+        this.setTimeout(
+          () => { 
+            if (this.state.status === nextStatus) {
+              this.changeStatus(status, true); 
+            }
+          },
+          3000
+        );
+        
       }
       else {
         this.props.onPress(event.id);
@@ -145,3 +156,6 @@ export default class EventRow extends React.Component {
 
 };
 
+reactMixin(EventRow.prototype, TimerMixin);
+
+export default EventRow;
