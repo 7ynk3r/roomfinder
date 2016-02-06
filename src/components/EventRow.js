@@ -111,13 +111,9 @@ class EventRow extends React.Component {
         this.changeStatus(nextStatus, true);
         this.setTimeout(
           () => { 
-            if (this.state.status === nextStatus) {
-              this.changeStatus(status, true); 
-            }
-          },
-          3000
-        );
-        
+            if (this.state.status !== nextStatus) return;
+            this.changeStatus(status, true); 
+          }, 3000);        
       }
       else {
         this.props.onPress(event.id);

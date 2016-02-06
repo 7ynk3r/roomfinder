@@ -9,7 +9,7 @@ import EventSection from './EventSection'
 import EventRow from './EventRow'
 import Loading from './Loading'
 
-import React, { StyleSheet, View, ListView } from 'react-native';
+import React, { StyleSheet, View, ListView, LayoutAnimation, } from 'react-native';
 
 
 export default React.createClass({
