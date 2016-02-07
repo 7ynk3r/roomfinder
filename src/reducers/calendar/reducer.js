@@ -30,7 +30,6 @@ export default (state = initialState, action = {}) => {
       const { eventId } = action;
       let event = state.eventById.get(eventId);
       if (ready && result) {
-        logJSON(result, '>>>result')
         const serverId = result.id;
         const taken = (serverId||0) > 0;
         event = event

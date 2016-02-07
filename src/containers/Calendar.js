@@ -28,7 +28,6 @@ const mapStateToProps = state => {
   const slotEventIds = _.map(slotIds, sid => _.pluck(eventsBySlotId[sid], 'id'));
   const slotSizes = calendar.slotSizes;
   const slotSize = calendar.slotSize;
-  // logJSON(slotSizes, 'xxxxxxxx'); 
   return { 'calendar' : {
     ...calendar, slotIds, slotEventIds, slotSizes, slotSize
   }};
@@ -36,7 +35,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  // logJSON(_.keys(actions[0]));
   const creators = Map()
           .merge(...actions)
           .filter(value => typeof value === 'function')
