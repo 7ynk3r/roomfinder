@@ -7,13 +7,15 @@ import thunk from 'redux-thunk';
 
 import App from './containers/Calendar';
 import calendar from './reducers/calendar/reducer';
+import auth from './reducers/auth/reducer';
 
 const createStoreWithMiddleware = applyMiddleware(
   thunk
 )(createStore);
 
 const reducer = combineReducers({
-  calendar
+  calendar,
+  auth,
 });
 
 const configureStore = initialState => {

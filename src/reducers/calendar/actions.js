@@ -1,19 +1,9 @@
 'use strict';
 
 import logJSON from '../../logJSON'
-
 import { GET_EVENTS, TAKE_EVENT, FREE_EVENT, CHANGE_SLOT_SIZE } from './actionTypes';
-// import googleapi from '../../lib/googleapi'
-import { _promiseActionThunk, _makeReadyAction} from '../common/actions.js'
-// import secret from  require('./secret');
-
+import { _promiseActionThunk, _makeReadyAction, _delay} from '../common/actions.js'
 import getEventsMockData from '../../__mocks__/googleapi-org'
-
-
-
-const delay = time => new Promise(fulfill => {
-  setTimeout(fulfill, time);
-});
 
 
 export const _getEvents = () => {
@@ -75,14 +65,14 @@ export const changeSlotSize = slotSize => {
 
 export const _getEventsMock = () => {
   const action = _getEvents();
-  const promise = delay(100).then(()=>Promise.resolve(getEventsMockData));
+  const promise = _delay(100).then(()=>Promise.resolve(getEventsMockData));
   return _promiseActionThunk(promise, action);
 };
 
 export const _takeEventMock = eventId => {
   const action = _takeEvent(eventId);
   const result = { id : 1 };
-  const promise = delay(2000).then(()=>Promise.resolve(result));
+  const promise = _delay(2000).then(()=>Promise.resolve(result));
   return _promiseActionThunk(promise, action);
 }
 
@@ -90,6 +80,6 @@ export const _freeEventMock = eventId => {
   const action = _freeEvent(eventId);
   const result = { id : 0 };
   logJSON(result, '<<<<');
-  const promise = delay(2000).then(()=>Promise.resolve(result));
+  const promise = _delay(2000).then(()=>Promise.resolve(result));
   return _promiseActionThunk(promise, action);
 }

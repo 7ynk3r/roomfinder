@@ -14,12 +14,15 @@ import FilterBar from '../components/FilterBar'
 
 import * as calendarActions from '../reducers/calendar/actions';
 
+
 const actions = [
   calendarActions
 ];
 
 
 const mapStateToProps = state => {  
+  
+  logJSON(state.auth, "state.auth")
   
   const calendar = state.calendar.toJS();
   const events = _.values(calendar.eventById);

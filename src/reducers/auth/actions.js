@@ -1,12 +1,9 @@
 'use strict';
 
-import { AUTHENTICATE } from './actionTypes';
-
-import { _promiseActionThunk, _makeReadyAction} from '../common/actions.js'
-
-const delay = time => new Promise(fulfill => {
-  setTimeout(fulfill, time);
-});
+import { AUTHENTICATE } from './actionTypes'
+import { _promiseActionThunk, _makeReadyAction, _delay } from '../common/actions.js'
+import secret from './secret'
+import googleapi from '../../lib/googleapi'
 
 export const _authenticate = code => {
   return {
@@ -16,14 +13,20 @@ export const _authenticate = code => {
 }
 
 export const authenticate = code => {
-  var action = _authenticate(code);
-  return promiseActionThunk(undefined, action);
+  const action = _authenticate(code);
+  const promise = googleapi.authenticate(
+    code,
+    secret.google.client_id,
+    secret.google.client_secret
+  );  
+  return promiseActionThunk(promise, action);
 }
 
-// export const _freeEventMock = eventId => {
-//   const action = _freeEvent(eventId);
-//   const result = { id : 0 };
-//   logJSON(result, '<<<<');
-//   const promise = delay(2000).then(()=>Promise.resolve(result));
-//   return _promiseActionThunk(promise, action);
-// }
+// Mock
+
+export const _authenticateMock = eventId => {
+  const action = _authenticate(code);
+  const result = { };
+  const promise = delay(2000).then(()=>Promise.resolve(result));
+  return _promiseActionThunk(promise, action);
+}

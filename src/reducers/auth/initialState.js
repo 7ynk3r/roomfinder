@@ -15,4 +15,4 @@ const Authentication = Record({
 
 const initialState = new Authentication();
 
-export default Authentication;
+export default initialState;

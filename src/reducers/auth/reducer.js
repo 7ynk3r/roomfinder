@@ -1,13 +1,13 @@
-import ../../../
 
+import logJSON from '../../logJSON';
 import initialState from './initialState';
 import { AUTHENTICATE } from './actionTypes';
 
 
-export const api = (state = initialState, action = {}) => {
+export default (state = initialState, action = {}) => {
   const { type, ready, result, errors } = action;
   switch(type) {
-    case actionTypes.AUTHENTICATE:
+    case AUTHENTICATE:
       if (ready) {
         if (error) {
           state = state.merge({errors});

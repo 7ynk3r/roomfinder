@@ -34,3 +34,9 @@ export const _promiseActionThunk = (promise, action, validate) => {
     );
   };
 }
+
+// Testing
+
+export const _delay = time => new Promise(fulfill => {
+  setTimeout(fulfill, time);
+});

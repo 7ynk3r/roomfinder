@@ -5,20 +5,20 @@ var GoogleAPI = function() {}
 
 GoogleAPI.prototype = {
 
-  init : function(code, client_id, client_secret) {
-    this.code = code;
-    this.client_id = client_id;
-    this.client_secret = client_secret;
-  },
+  // init : function(code, client_id, client_secret) {
+  //   this.code = code;
+  //   this.client_id = client_id;
+  //   this.client_secret = client_secret;
+  // },
 
   // base ////////////////////////////////
 
-  authenticate : function() {
+  authenticate : function(code, client_id, client_secret) {
     var that = this;
     var body = 
-      "code=" + this.code +
-      "&client_id=" + this.client_id + 
-      "&client_secret=" + this.client_secret +
+      "code=" + code +
+      "&client_id=" + client_id + 
+      "&client_secret=" + client_secret +
       "&redirect_uri=" + "http://localhost" +
       "&grant_type=" + "authorization_code";
     
