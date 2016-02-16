@@ -1,9 +1,10 @@
-// TODO: Relojito, button actions names and transitions, crashlytics + google analytics.
 
 'use strict';
 
 import logJSON from '../logJSON'
 import _ from 'underscore'
+
+import theme from './theme'
 
 import EventSection from './EventSection'
 import EventRow from './EventRow'
@@ -108,7 +109,6 @@ export default React.createClass({
         // automaticallyAdjustContentInsets={false}
         // keyboardShouldPersistTaps={true}
         showsVerticalScrollIndicator={false}
-        // style={{backgroundColor:'white'}}
         renderSectionHeader = {(sectionData, sectionID) =>
           <EventSection 
             style={styles.section}
@@ -152,10 +152,7 @@ var styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 20,
     marginLeft: 20,
-    backgroundColor: '#393E46',
+    backgroundColor: theme.secondaryBackgroundColor,
     borderLeftWidth:4,
-    // color: '#333333',
-    // borderBottomWidth: 1,
-    // borderColor: 'white',
   },  
 });

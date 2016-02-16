@@ -45,7 +45,8 @@ let App = React.createClass({
   
   render () {
     const auth = this.props.auth;
-    const component = !auth.authenticated 
+    // TODO: Remove the double negation.
+    const component = !!auth.authenticated 
       ? <Login />
       : <Calendar />
 

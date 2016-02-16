@@ -3,6 +3,8 @@
 import logJSON from '../logJSON'
 import _ from 'underscore'
 
+import theme from './theme'
+
 import React, { 
   View, 
   SegmentedControlIOS,
@@ -41,20 +43,14 @@ export default class extends React.Component {
 
   render() {
     logJSON('FilterBar.render');
-    // logJSON(this.state.slotSizes, 'this.state.slotSizes');
-    // const slotSizes = this.state.slotSizeValues;
-    // const slotSize = this.state.slotSize;
-    // const slotSizeIndex = _.indexOf(slotSizes, slotSize);
-    logJSON(this.state.slotSizeValue, 'this.state.slotSizeValue');
-    logJSON(this.state.slotSizeIndex, 'this.state.slotSizeIndex');
     return (
       <View style={{
-        borderBottomColor:'#393E46',
+        borderBottomColor:theme.secondaryBackgroundColor,
         borderBottomWidth: 1,
       }}>
         <SegmentedControlIOS 
           // momentary={true}
-          tintColor={'#EEEEEE'}
+          tintColor={theme.primaryForegroundColor}
           style={{
             marginTop:25, 
             marginBottom:10, 

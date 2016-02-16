@@ -3,6 +3,8 @@
 import logJSON from '../logJSON'
 import _ from 'underscore'
 
+import theme from './theme'
+
 import React, { 
   View, 
   Text, 
@@ -35,11 +37,11 @@ class EventRow extends React.Component {
     }
     
     this.statusColor = {
-      GET:'80D6FF',
-      TAKE:'95E1D3',
-      DROP:'EDF798',
-      RELEASE:'F06868',
-      PROCESSING:'EEEEEE',
+      GET:theme.getColor,
+      TAKE:theme.takeColor,
+      DROP:theme.dropColor,
+      RELEASE:theme.releaseColor,
+      PROCESSING:theme.processingColor,
     };
 
     this.statusText = {
@@ -100,7 +102,7 @@ class EventRow extends React.Component {
     const borderColor = event.resource.backgroundColor;
     const textAlign = 'center'; 
     const flexDirection = 'row';
-    const eventColor = '#EEEEEE';
+    const eventColor = theme.primaryForegroundColor;
     const actionColor = this.statusColor[status];
       
     // events

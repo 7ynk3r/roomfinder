@@ -8,6 +8,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import { Map } from 'immutable';
 
+import theme from '../components/theme'
+
 import EventList from '../components/EventList'
 import Loading from '../components/Loading'
 import FilterBar from '../components/FilterBar'
@@ -79,7 +81,7 @@ let Calendar = React.createClass({
     const ready = calendar.ready
 
     return (
-      <View style={{flex:1,backgroundColor : '#222831'}}>
+      <View style={{flex:1,backgroundColor : theme.primaryBackgroundColor}}>
         <FilterBar 
           slotSizes={calendar.slotSizes}
           slotSize={calendar.slotSize}
