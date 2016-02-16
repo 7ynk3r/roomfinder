@@ -24,9 +24,9 @@ export const authenticate = code => {
 
 // Mock
 
-export const _authenticateMock = eventId => {
+export const _authenticateMock = code => {
   const action = _authenticate(code);
-  const result = { };
-  const promise = delay(2000).then(()=>Promise.resolve(result));
+  const result = {};
+  const promise = _delay(2000).then(()=>Promise.resolve(result));
   return _promiseActionThunk(promise, action);
 }

@@ -5,7 +5,10 @@ import { Provider } from 'react-redux/native';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
-import App from './containers/Calendar';
+// main component
+import App from './containers/App';
+
+// reducers
 import calendar from './reducers/calendar/reducer';
 import auth from './reducers/auth/reducer';
 

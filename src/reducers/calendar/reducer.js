@@ -7,7 +7,6 @@ import initialState, { createCalendar } from './initialState';
 
 export default (state = initialState, action = {}) => {
   const { type, ready, result, errors } = action;
-  logJSON(action, 'action<<<<<<<<<');
   
   switch(type) {
     

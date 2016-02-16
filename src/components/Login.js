@@ -1,5 +1,7 @@
 'use strict';
 
+import logJSON from '../logJSON'
+
 var React = require('react-native');
 var {
   AppRegistry,
@@ -35,7 +37,7 @@ var Login = React.createClass({
     + '&response_type=' + 'code'
     + '&scope=' + 'https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar' 
     + '&access_type=' + 'offline';
-
+    
     return (
       <WebView
         url={authorization_url}
@@ -57,4 +59,4 @@ var styles = StyleSheet.create({
   },
 });
 
-exports.module = LoginView;
+export default Login;

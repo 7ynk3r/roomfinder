@@ -8,6 +8,7 @@ import { Map } from 'immutable';
 import React from 'react-native';
 
 import Calendar from './Calendar';
+import Login from './Login';
 
 const actions = [];
 
@@ -43,7 +44,12 @@ let App = React.createClass({
   },
   
   render () {
-    let component = <Calendar />;
+    const auth = this.props.auth;
+    const component = !auth.authenticated 
+      ? <Login />
+      : <Calendar />
+
+    logJSON(auth, '\n\n\nauth')
     return (
       component
     );
