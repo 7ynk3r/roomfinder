@@ -51,28 +51,21 @@ const mapDispatchToProps = dispatch => {
   };
 }
 
-let Calendar = React.createClass({
-
-  // getInitialState() {
-  //   return {};
-  // },
+class Calendar extends React.Component {
 
   componentWillReceiveProps(props) {
     logJSON('Calendar.componentWillReceiveProps');
     
-  },
+  }
   
   componentWillMount() {
     logJSON('Calendar.componentWillMount');
     StatusBarIOS.setStyle('light-content');
-  },
+  }
 
   componentDidMount() {
     logJSON('Calendar.componentDidMount');
-    // this.actions.getEventsMock();
-    // logJSON(_.keys(this.props.actions), '\n\n\n\nthis.actions ');
-    // this.props.actions._getEventsMock();
-  },
+  }
   
   render () {
     logJSON('Calendar.render');
@@ -81,7 +74,7 @@ let Calendar = React.createClass({
     const ready = calendar.ready
 
     return (
-      <View style={{flex:1,backgroundColor : theme.primaryBackgroundColor}}>
+      <View style={styles.container}>
         <FilterBar 
           slotSizes={calendar.slotSizes}
           slotSize={calendar.slotSize}
@@ -97,9 +90,14 @@ let Calendar = React.createClass({
       </View>
     );
   }
-});
+  
+};
 
 var styles = StyleSheet.create({
+  container : {
+    flex:1,
+    backgroundColor:theme.primaryBackgroundColor    
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

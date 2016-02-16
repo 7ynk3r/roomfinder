@@ -5,7 +5,9 @@ import logJSON from '../logJSON'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import { Map } from 'immutable';
-import React from 'react-native';
+import React, {
+  LayoutAnimation,  
+} from 'react-native';
 
 import Calendar from './Calendar';
 import Login from './Login';
@@ -31,22 +33,20 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-let App = React.createClass({
-
-  // getInitialState() {
-  //   return {};
-  // },
+class App extends React.Component {
 
   componentWillReceiveProps(props) {
-  },
+  }
 
   componentDidMount() {
-  },
+  }
   
   render () {
+    LayoutAnimation.linear();
+
     const auth = this.props.auth;
     // TODO: Remove the double negation.
-    const component = !!auth.authenticated 
+    const component = !auth.authenticated 
       ? <Login />
       : <Calendar />
 
@@ -55,7 +55,8 @@ let App = React.createClass({
       component
     );
   }
-});
+  
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 

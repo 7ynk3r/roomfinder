@@ -46,7 +46,6 @@ export const freeEvent = eventId => {
   return _promiseActionThunk(promise, action);
 }
 
-
 export const changeSlotSize = slotSize => {
   return {
     type: CHANGE_SLOT_SIZE,
@@ -54,18 +53,11 @@ export const changeSlotSize = slotSize => {
   };
 }
 
-// export const changeSlotSize = slotSize => {
-//   const action = _changeSlotSize(slotSize);
-//   const promise = undefined;
-//   return _promiseActionThunk(promise, action);
-// }
-
-
 // mocks
 
 export const _getEventsMock = () => {
   const action = _getEvents();
-  const promise = _delay(100).then(()=>Promise.resolve(getEventsMockData));
+  const promise = _delay(500).then(()=>Promise.resolve(getEventsMockData));
   return _promiseActionThunk(promise, action);
 };
 
