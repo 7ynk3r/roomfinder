@@ -10,5 +10,9 @@ export default {
   releaseColor:'#F06868',
   processingColor:'#EEEEEE',
   // sizes
-  normalSize:20,
+  largeSize:20,
+  normalSize:10,
+  smallSize:5,
+  borderSize:1,
+  statusBarSize:15,
 }

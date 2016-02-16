@@ -6,8 +6,9 @@ import _ from 'underscore'
 import theme from './theme'
 
 import React, { 
+  StyleSheet, 
   View, 
-  SegmentedControlIOS,
+  SegmentedControlIOS 
 } from 'react-native';
 
 export default class extends React.Component {
@@ -37,26 +38,16 @@ export default class extends React.Component {
   _onValueChange(value) {
     const slotSizeIndex = _.indexOf(this.state.slotSizeTexts, value);
     const slotSizeValue = this.state.slotSizeValues[slotSizeIndex];
-    // logJSON(slotSizeValue, 'xxxxx');
     this.props.onChangeEventSize(slotSizeValue);
   }
 
   render() {
     logJSON('FilterBar.render');
     return (
-      <View style={{
-        borderBottomColor:theme.secondaryBackgroundColor,
-        borderBottomWidth: 1,
-      }}>
+      <View style={styles.segmentedControlContainer}>
         <SegmentedControlIOS 
-          // momentary={true}
           tintColor={theme.primaryForegroundColor}
-          style={{
-            marginTop:25, 
-            marginBottom:10, 
-            marginLeft:20, 
-            marginRight:20, 
-          }}
+          style={styles.segmentedControl}
           values={this.state.slotSizeTexts}
           selectedIndex={this.state.slotSizeIndex}
           onValueChange={_.bind(this._onValueChange, this)}
@@ -67,3 +58,15 @@ export default class extends React.Component {
 
 };
 
+var styles = StyleSheet.create({
+  segmentedControlContainer : {
+    borderBottomColor:theme.secondaryBackgroundColor,
+    borderBottomWidth:theme.borderSize,    
+  },
+  segmentedControl : {
+    marginTop:theme.normalSize+theme.statusBarSize, 
+    marginBottom:theme.normalSize, 
+    marginLeft:theme.largeSize, 
+    marginRight:theme.largeSize,     
+  }
+});

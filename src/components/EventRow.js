@@ -98,10 +98,7 @@ class EventRow extends React.Component {
     
     // styles
     const style = this.props.style;
-    const width = status.length * 11;
     const borderColor = event.resource.backgroundColor;
-    const textAlign = 'center'; 
-    const flexDirection = 'row';
     const eventColor = theme.primaryForegroundColor;
     const actionColor = this.statusColor[status];
       
@@ -124,26 +121,15 @@ class EventRow extends React.Component {
     
 
     return (
-      <View style={[style, { borderColor, flexDirection }]}>
-        <Text style={{'flex':1, color:eventColor}}>
+      <View style={[style, styles.row, { borderColor }]}>
+        <Text style={[styles.rowText, { color:eventColor }]}>
           {title}
         </Text>
         <TouchableWithoutFeedback onPress={onPress}>
           <View 
-            style={{
-              borderWidth:1, 
-              borderRadius:3, 
-              borderColor:actionColor, 
-              padding:3, 
-              paddingLeft:6, 
-              paddingRight:6, 
-          }}>
+            style={[styles.button, { borderColor:actionColor }]}>
             <Text 
-              style={{
-                textAlign,
-                color:actionColor, 
-                fontSize:11,
-              }}>
+              style={[styles.buttonText, { color:actionColor }]}>
               { statusText }
             </Text>
           </View>
@@ -155,5 +141,26 @@ class EventRow extends React.Component {
 };
 
 reactMixin(EventRow.prototype, TimerMixin);
+
+var styles = StyleSheet.create({
+  row : {
+    flexDirection:'row',
+  },
+  rowText : {
+    flex:1,
+  },
+  button : {
+    borderWidth:1, 
+    borderRadius:3, 
+    padding:3, 
+    paddingLeft:6, 
+    paddingRight:6,     
+  },
+  buttonText : {
+    textAlign:'center',
+    fontSize:11,    
+  },
+});
+
 
 export default EventRow;

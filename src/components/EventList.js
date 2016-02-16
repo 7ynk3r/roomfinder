@@ -10,13 +10,18 @@ import EventSection from './EventSection'
 import EventRow from './EventRow'
 import Loading from './Loading'
 
-import React, { StyleSheet, View, ListView, LayoutAnimation, } from 'react-native';
+import React, { 
+  StyleSheet, 
+  View, 
+  ListView, 
+} from 'react-native';
 
-
-export default React.createClass({
+export default class extends React.Component {
   
-  getInitialState() {
+  constructor(props: any) {
     logJSON('EventList.getInitialState')
+    super(props);
+
     // http://moduscreate.com/react-native-listview-with-section-headers/
     const ds = new ListView.DataSource({
       getSectionHeaderData : (dataBlob, sid) => { 
@@ -55,17 +60,18 @@ export default React.createClass({
         return hasChanged;
       },      
     });
-    return {
+    
+    this.state = {
       dataSource: ds.cloneWithRows([])
     };
-  },
+  }
     
   componentDidMount() {
     logJSON('EventList.componentDidMount');
     // Initial load.
     this.props.onGetEvents();
     this.componentWillReceiveProps(this.props);
-  },
+  }
 
   componentWillReceiveProps(props) {
     logJSON('EventList.componentWillReceiveProps');
@@ -86,7 +92,7 @@ export default React.createClass({
     this.setState({ 
       dataSource
     });
-  },
+  }
  
   render() {
     logJSON('EventList.render');
@@ -94,7 +100,7 @@ export default React.createClass({
     const ready = this.props.calendar.ready;
     
     if (!ready) {
-      return (<Loading style={{flex:1}}/>);
+      return (<Loading style={styles.loading}/>);
     }
     
     // Take/Free event.
@@ -124,35 +130,44 @@ export default React.createClass({
         }
         renderSeparator = {(rowData, sectionID, rowID, highlightRow) =>
           <View 
-            style={[{marginLeft:20, height:1,backgroundColor:'transparent'}]}
+            style={styles.separator}
             key={sectionID+rowID}
           />
         }
       />
     )
-  },
+  }
     
-});
+};
 
 var styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: theme.largeSize,
   },
   section : {
-    paddingTop: 15,
-    padding: 5,
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingTop: theme.largeSize-theme.smallSize,
+    paddingBottom: theme.smallSize,
+    paddingLeft: theme.largeSize,
+    paddingRight: theme.largeSize,
   },
   row : {
-    padding: 15,
-    paddingLeft: 16,
-    paddingRight: 20,
-    marginLeft: 20,
+    marginLeft: theme.largeSize,
+    marginRight: 0,
+    padding: theme.normalSize,
+    paddingLeft: theme.largeSize-theme.smallSize,
+    paddingRight: theme.largeSize,
     backgroundColor: theme.secondaryBackgroundColor,
-    borderLeftWidth:4,
+    borderLeftWidth:theme.smallSize,
   },  
+  separator : {
+    marginLeft:theme.largeSize, 
+    height:theme.borderSize,
+    backgroundColor: 'transparent'
+  },
+  loading : {
+    flex:1    
+  }
 });
