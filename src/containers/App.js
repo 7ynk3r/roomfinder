@@ -45,12 +45,10 @@ class App extends React.Component {
     LayoutAnimation.linear();
 
     const auth = this.props.auth;
-    // TODO: Remove the double negation.
     const component = !auth.authenticated 
       ? <Login />
       : <Calendar />
 
-    logJSON(auth, '\n\n\nauth')
     return (
       component
     );

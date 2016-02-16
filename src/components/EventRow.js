@@ -27,6 +27,7 @@ class EventRow extends React.Component {
     var DROP = 'DROP';
     var RELEASE = 'RELEASE';
     var PROCESSING = 'PROCESSING';
+    var ERROR = 'ERROR';
     
     this.status = {
       GET,
@@ -34,6 +35,7 @@ class EventRow extends React.Component {
       DROP,
       RELEASE,
       PROCESSING,
+      ERROR,
     }
     
     this.statusColor = {
@@ -42,6 +44,7 @@ class EventRow extends React.Component {
       DROP:theme.dropColor,
       RELEASE:theme.releaseColor,
       PROCESSING:theme.processingColor,
+      ERROR:theme.releaseColor,
     };
 
     this.statusText = {
@@ -50,6 +53,7 @@ class EventRow extends React.Component {
       DROP:'DROP',
       RELEASE:'RELEASE',
       PROCESSING:'...',
+      ERROR:'RETRY',
     };
 
     this.statusNext = {
@@ -72,7 +76,9 @@ class EventRow extends React.Component {
   
   statusFromProps(props) {
     const event = props.event;
-    return !event.ready ? this.status.PROCESSING : event.taken ? this.status.DROP : this.status.GET;
+    const hasErrors = event.errors.length>0;
+    const status = hasErrors ? this.status.ERROR : !event.ready ? this.status.PROCESSING : event.taken ? this.status.DROP : this.status.GET;
+    return status;
   }
   
   changeStatus(status, animated) {
@@ -104,6 +110,7 @@ class EventRow extends React.Component {
       
     // events
     const onPress = () => {
+      logJSON(this.props.event, 'event!!!');
       const nextStatus = this.statusNext[status];
       logJSON(nextStatus, 'nextStatusnextStatus');
       if (nextStatus) {
@@ -115,6 +122,7 @@ class EventRow extends React.Component {
           }, 3000);        
       }
       else {
+        logJSON(this.props.onPress, 'this.props.onPress');
         this.props.onPress(event.id);
       }
     }

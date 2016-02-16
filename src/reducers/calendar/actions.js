@@ -1,10 +1,16 @@
 'use strict';
 
 import logJSON from '../../logJSON'
-import { GET_EVENTS, TAKE_EVENT, FREE_EVENT, CHANGE_SLOT_SIZE } from './actionTypes';
 import { _promiseActionThunk, _makeReadyAction, _delay} from '../common/actions.js'
 import getEventsMockData from '../../__mocks__/googleapi-org'
 
+import { 
+  GET_EVENTS, 
+  TAKE_EVENT, 
+  FREE_EVENT, 
+  CLEAR_EVENT_ERRORS,
+  CHANGE_SLOT_SIZE,
+} from './actionTypes';
 
 export const _getEvents = () => {
   return {
@@ -46,6 +52,14 @@ export const freeEvent = eventId => {
   return _promiseActionThunk(promise, action);
 }
 
+export const clearEventErrors = eventId => {
+  const action = {
+    type: CLEAR_EVENT_ERRORS,
+    eventId
+  };
+  return _makeReadyAction(action, true, undefined, []);
+}
+
 export const changeSlotSize = slotSize => {
   return {
     type: CHANGE_SLOT_SIZE,
@@ -56,6 +70,7 @@ export const changeSlotSize = slotSize => {
 // mocks
 
 export const _getEventsMock = () => {
+  logJSON('_getEventsMock');
   const action = _getEvents();
   const promise = _delay(500).then(()=>Promise.resolve(getEventsMockData));
   return _promiseActionThunk(promise, action);
@@ -63,8 +78,10 @@ export const _getEventsMock = () => {
 
 export const _takeEventMock = eventId => {
   const action = _takeEvent(eventId);
-  const result = { id : 1 };
-  const promise = _delay(2000).then(()=>Promise.resolve(result));
+  // const result = { id : 1 };
+  // const promise = _delay(2000).then(()=>Promise.resolve(result));
+  const error = {};
+  const promise = _delay(2000).then(()=>Promise.error(error));
   return _promiseActionThunk(promise, action);
 }
 
@@ -75,3 +92,4 @@ export const _freeEventMock = eventId => {
   const promise = _delay(2000).then(()=>Promise.resolve(result));
   return _promiseActionThunk(promise, action);
 }
+

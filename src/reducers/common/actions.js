@@ -12,8 +12,9 @@ export const navigateTo = (destination, parameters) => {
 
 // Helper
 
-export const _makeReadyAction = (action, ready, result, errors) => {
-  return Object.assign({}, action, { ready, result, errors })
+export const _makeReadyAction = (action, ready, result={}, errors=[]) => {
+  const hasErrors = errors.length>0;
+  return Object.assign({}, action, { ready, result, errors, hasErrors })
 }
 
 export const _promiseActionThunk = (promise, action, validate) => {
@@ -23,7 +24,7 @@ export const _promiseActionThunk = (promise, action, validate) => {
     validate = validate || (() => {return{valid:true}});
     var validation = validate(state, action);
     if (!validation.valid) {
-      dispatch(makeReadyAction(action, true, undefined, validation.errors));
+      dispatch(_makeReadyAction(action, true, undefined, validation.errors));
       return;
     }    
     // Execute

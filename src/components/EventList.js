@@ -53,7 +53,8 @@ export default class extends React.Component {
           || r1.slotId !== r2.slotId
           || r1.resourceId !== r2.resourceId
           || r1.taken !== r2.taken
-          || r1.ready !== r2.ready;
+          || r1.ready !== r2.ready
+          || r1.errors !== r2.errors;
         if (hasChanged) {
           logJSON(hasChanged, 'rowHasChanged');
         }
@@ -105,7 +106,10 @@ export default class extends React.Component {
     
     // Take/Free event.
     const noop = () => console.log('noop');
-    const onPress = (ready, taken) => !ready ? noop : taken ? this.props.onFreeEvent : this.props.onTakeEvent;
+    const onPress = (event) => 
+      event.errors.length>0 ? this.props.onClearEventErrors :
+      !event.ready ? noop : 
+      event.taken ? this.props.onFreeEvent : this.props.onTakeEvent;
 
     return (
       <ListView
@@ -125,7 +129,7 @@ export default class extends React.Component {
           <EventRow 
             style={[styles.row]}
             event={rowData}
-            onPress={onPress(rowData.ready, rowData.taken)}
+            onPress={onPress(rowData)}
           />
         }
         renderSeparator = {(rowData, sectionID, rowID, highlightRow) =>

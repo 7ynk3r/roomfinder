@@ -2,11 +2,19 @@
 
 import _ from 'underscore';
 import logJSON from '../../logJSON';
-import { GET_EVENTS, TAKE_EVENT, FREE_EVENT, CHANGE_SLOT_SIZE } from './actionTypes';
 import initialState, { createCalendar } from './initialState';
 
+import { 
+  GET_EVENTS, 
+  TAKE_EVENT, 
+  FREE_EVENT, 
+  CLEAR_EVENT_ERRORS,
+  CHANGE_SLOT_SIZE,
+} from './actionTypes';
+
 export default (state = initialState, action = {}) => {
-  const { type, ready, result, errors } = action;
+  const { type, ready, result, errors, hasErrors } = action;
+  logJSON(type, "calendar.reducer [started]")
   
   switch(type) {
     
@@ -18,35 +26,29 @@ export default (state = initialState, action = {}) => {
           .set('slotSize', slotSize)
           .set('slotSizes', slotSizes);
       }
-      else if (ready && errors) {
-        state = state.merge({errors});
-      }
-      state = state.merge({ready});
-      return state;
+      state = state.merge({ready, errors});
+      break;
       
     case TAKE_EVENT:
-    case FREE_EVENT:      
+    case FREE_EVENT:  
+    case CLEAR_EVENT_ERRORS:    
       const { eventId } = action;
       let event = state.eventById.get(eventId);
       if (ready && result) {
         const serverId = result.id;
         const taken = (serverId||0) > 0;
-        event = event
-          .delete(errors)
-          .merge({taken, serverId});
+        event = event.merge({taken, serverId});
       }
-      else if (ready && errors) {
-        event = event.merge({errors});
-      }
-      event = event.merge({ready});
-      return state.setIn(['eventById',eventId],event);
+      event = event.merge({ready, errors});
+      state = state.setIn(['eventById',eventId],event);
+      break;
     
     case CHANGE_SLOT_SIZE:
       const { slotSize } = action;
       state = state.set('slotSize', slotSize);
-      logJSON(state, 'y yyyyy')
-      return state;
+      break;
   }
+  logJSON(type, "calendar.reducer [finished]")
   
   return state;
 }
