@@ -42,12 +42,15 @@ class App extends React.Component {
   }
   
   render () {
-    LayoutAnimation.linear();
+    // LayoutAnimation.linear();
 
-    const auth = this.props.auth;
-    const component = !auth.authenticated 
-      ? <Login />
-      : <Calendar />
+    // const auth = this.props.auth;
+    // const component = !auth.authenticated 
+    //   ? <Login />
+    //   : <Calendar />
+
+    const component = <Calendar />
+
 
     return (
       component

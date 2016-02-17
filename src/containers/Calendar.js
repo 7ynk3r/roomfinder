@@ -81,7 +81,7 @@ class Calendar extends React.Component {
           onChangeEventSize={actions.changeSlotSize}
         />
         <EventList 
-          style={{flex:1}}
+          style={styles.eventList}
           calendar={calendar}
           onGetEvents={actions._getEventsMock}
           onTakeEvent={actions._takeEventMock}
@@ -98,7 +98,10 @@ var styles = StyleSheet.create({
   container : {
     flex:1,
     backgroundColor:theme.primaryBackgroundColor    
-  }
+  },
+  eventList : {
+    flex:1,
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

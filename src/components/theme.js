@@ -15,4 +15,6 @@ export default {
   smallSize:5,
   borderSize:1,
   statusBarSize:15,
+  // fonts
+  largeFontSize:20,
 }

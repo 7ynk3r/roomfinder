@@ -14,7 +14,7 @@ const Calendar = Record({
   slotById : Map(), // Slot record
   resourceById : Map(), // Resource record
   
-  slotSizes : List([15,30,45]),
+  slotSizes : List([15,30]),
   slotSize : 15  
 });
 

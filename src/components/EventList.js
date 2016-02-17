@@ -13,6 +13,7 @@ import Loading from './Loading'
 import React, { 
   StyleSheet, 
   View, 
+  Text, 
   ListView, 
 } from 'react-native';
 
@@ -82,27 +83,50 @@ export default class extends React.Component {
       this.props.onGetEvents();
     }
 
-    const dataBlob = props.calendar;
-    const rows = dataBlob.slotEventIds;
-    const sections = dataBlob.slotIds
+    const calendar = props.calendar;
+    const rows = calendar.slotEventIds;
+    const sections = calendar.slotIds
     const dataSource = this.state.dataSource.cloneWithRowsAndSections(
-        dataBlob, 
+        calendar, 
         sections, 
         rows);
     
+    const ready = calendar.ready;
+    const hasResources = _.keys(calendar.resourceById).length>0;
+    const hasEvents = _.keys(calendar.eventById).length>0;
+
+    const addCalendarsMessage = 'Go to Google Calendar to add one or more room calendars.';
+    const message 
+    = !hasResources ? 'There\'re no rooms associated to your Google Calendar account.\n\n'+addCalendarsMessage
+    : !hasEvents ? 'There\'re no empty rooms.\n\n'+addCalendarsMessage
+    : ''
+    
     this.setState({ 
-      dataSource
+      dataSource,
+      hasResources,
+      hasEvents,
+      ready,
+      message,
     });
   }
  
   render() {
     logJSON('EventList.render');
-    const self = this;
-    const ready = this.props.calendar.ready;
+    const state = this.state;
     
-    if (!ready) {
+    if (!state.ready) {
       return (<Loading style={styles.loading}/>);
     }
+    
+    const message = state.message;
+    if (message.length>0) {
+      return (
+        <View style={styles.message}>
+          <Text style={styles.messageText}>{message}</Text>
+        </View>
+      );
+    }
+    
     
     // Take/Free event.
     const noop = () => console.log('noop');
@@ -115,7 +139,7 @@ export default class extends React.Component {
       <ListView
         ref="listView"
         // initialListSize={20}
-        dataSource={this.state.dataSource}
+        dataSource={state.dataSource}
         // automaticallyAdjustContentInsets={false}
         // keyboardShouldPersistTaps={true}
         showsVerticalScrollIndicator={false}
@@ -145,12 +169,6 @@ export default class extends React.Component {
 };
 
 var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: theme.largeSize,
-  },
   section : {
     paddingTop: theme.largeSize-theme.smallSize,
     paddingBottom: theme.smallSize,
@@ -173,5 +191,15 @@ var styles = StyleSheet.create({
   },
   loading : {
     flex:1    
-  }
+  },
+  message : {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  messageText : {
+    textAlign:'center',
+    fontSize:theme.largeFontSize,    
+    color:theme.primaryForegroundColor,
+  },
 });
