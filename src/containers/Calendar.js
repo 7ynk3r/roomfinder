@@ -60,7 +60,7 @@ class Calendar extends React.Component {
   
   componentWillMount() {
     logJSON('Calendar.componentWillMount');
-    StatusBarIOS.setStyle('light-content');
+    //StatusBarIOS.setStyle('light-content');
   }
 
   componentDidMount() {

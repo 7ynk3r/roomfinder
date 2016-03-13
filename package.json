@@ -12,7 +12,7 @@
   "dependencies": {
     "immutable": "^3.7.5",
     "react-mixin": "^3.0.3",
-    "react-native": "^0.17.0",
+    "react-native": "^0.21.0",
     "react-redux": "^3.1.0",
     "react-timer-mixin": "^0.13.3",
     "redux": "^3.0.4",
@@ -21,42 +21,5 @@
     "underscore": "^1.8.3",
     "urlencode": "^1.1.0",
     "xdate": "^0.8.0"
-  },
-  "devDependencies": {
-    "babel-jest": "^6.0.1",
-    "jest-cli": "^0.8.2",
-    "react": "^0.14.3",
-    "react-addons-test-utils": "^0.14.3",
-    "docker": "^0.2.14"
-  },
-  "jest": {
-    "scriptPreprocessor": "./node_modules/babel-jest",
-    "setupEnvScriptFile": "./node_modules/react-native/jestSupport/env.js",
-    "testPathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "testFileExtensions": [
-      "es6",
-      "js"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "es6"
-    ],
-    "unmockedModulePathPatterns": [
-      "promise",
-      "source-map",
-      "key-mirror",
-      "immutable",
-      "fetch",
-      "redux",
-      "redux-thunk",
-      "fbjs"
-    ],
-    "verbose": false,
-    "testPathDirs": [
-      "src/"
-    ]
   }
 }
