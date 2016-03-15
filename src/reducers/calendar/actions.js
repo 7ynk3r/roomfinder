@@ -3,6 +3,7 @@
 import logJSON from '../../logJSON'
 import { _promiseActionThunk, _makeReadyAction, _delay} from '../common/actions.js'
 import getEventsMockData from '../../__mocks__/googleapi-org'
+import googleapi from '../../lib/googleapi'
 
 import { 
   GET_EVENTS, 
@@ -19,10 +20,12 @@ export const _getEvents = () => {
 }
 
 export const getEvents = () => {
+  logJSON(googleapi.groupedFreeSlotList, 'getEvents');
   const action = _getEvents();
-  const timeMin = new Date(2015, 9, 9, 10, 0, 0, 0);
-  const timeMax = new Date(2015, 9, 9, 20, 0, 0, 0);
-  const promise = undefined; //googleapi.groupedFreeSlotList(timeMin, timeMax, 15, 30, 10);
+  const now = new Date();
+  const timeMin = new Date(now.setHours(6,0,0,0));
+  const timeMax = new Date(now.setHours(20,0,0,0));
+  const promise = googleapi.groupedFreeSlotList(timeMin, timeMax, 15, 30, 10);
   return _promiseActionThunk(promise, action);
 }
 

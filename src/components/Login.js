@@ -24,9 +24,16 @@ var Login = React.createClass({
 
   onNavigationStateChange(navState) {   
     var parsed_url = urlparser.parse(navState.url);        
-    if (parsed_url.path === 'http://localhost/') {      
+    if (parsed_url.path === 'http://localhost/') {
        this.props.onCode(parsed_url.params.code);
     }
+  },
+  
+  renderError() {
+    // show no error
+    return (
+      <View />
+    );
   },
 
   render() {
@@ -37,6 +44,8 @@ var Login = React.createClass({
     + '&response_type=' + 'code'
     + '&scope=' + 'https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar' 
     + '&access_type=' + 'offline';
+    
+    logJSON(authorization_url, "authorization_url");
     
     return (
       <WebView

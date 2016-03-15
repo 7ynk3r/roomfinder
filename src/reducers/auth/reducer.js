@@ -5,6 +5,7 @@ import { AUTHENTICATE } from './actionTypes';
 
 
 export default (state = initialState, action = {}) => {
+  // logJSON(action, "auth action")
   const { type, ready, result, errors, hasErrors } = action;
 
   switch(type) {

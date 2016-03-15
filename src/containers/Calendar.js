@@ -60,7 +60,7 @@ class Calendar extends React.Component {
   
   componentWillMount() {
     logJSON('Calendar.componentWillMount');
-    //StatusBarIOS.setStyle('light-content');
+    StatusBarIOS.setStyle('light-content');
   }
 
   componentDidMount() {
@@ -83,7 +83,7 @@ class Calendar extends React.Component {
         <EventList 
           style={styles.eventList}
           calendar={calendar}
-          onGetEvents={actions._getEventsMock}
+          onGetEvents={actions.getEvents}
           onTakeEvent={actions._takeEventMock}
           onFreeEvent={actions._freeEventMock}
           onClearEventErrors={actions.clearEventErrors}
@@ -97,7 +97,7 @@ class Calendar extends React.Component {
 var styles = StyleSheet.create({
   container : {
     flex:1,
-    backgroundColor:theme.primaryBackgroundColor    
+    backgroundColor:theme.primaryBackgroundColor,
   },
   eventList : {
     flex:1,

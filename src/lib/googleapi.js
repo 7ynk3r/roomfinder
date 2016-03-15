@@ -2,25 +2,29 @@
 
 var _ = require('underscore');
 var GoogleAPI = function() {}
+import logJSON from '../logJSON'
 
 GoogleAPI.prototype = {
 
-  init : function(code, client_id, client_secret) {
-    this.code = code;
-    this.client_id = client_id;
-    this.client_secret = client_secret;
-  },
+  // init : function(code, client_id, client_secret) {
+  //   this.code = code;
+  //   this.client_id = client_id;
+  //   this.client_secret = client_secret;
+  // },
 
   // base ////////////////////////////////
 
-  authenticate : function() {
+  authenticate : function(code, client_id, client_secret) {
     var that = this;
     var body = 
-      "code=" + this.code +
-      "&client_id=" + this.client_id + 
-      "&client_secret=" + this.client_secret +
+      "code=" + code +
+      "&client_id=" + client_id + 
+      "&client_secret=" + client_secret +
       "&redirect_uri=" + "http://localhost" +
       "&grant_type=" + "authorization_code";
+      
+    // console.log('authenticate body', body);  
+
     
     return fetch('https://www.googleapis.com/oauth2/v3/token', {  
       method: 'post',  
@@ -43,8 +47,8 @@ GoogleAPI.prototype = {
   callApi: function(url, methodName, body) {
     var bodyParams = body ? JSON.stringify(body) : null;
 
-    console.log('--------------> calling API [' + methodName + ']' + url + ' with body: ' + bodyParams);
-
+    console.log('--------------> started calling API [' + methodName + ']' + url + ' with body: ' + bodyParams + ' authorization: \'' + this.authorization + '\'');
+    
     return fetch(url, {
       method: methodName,  
       headers: {  
@@ -55,6 +59,7 @@ GoogleAPI.prototype = {
       body: bodyParams
     })
     .then(function(response) {  
+      // const json = JSON.stringify(response.json() || {});
       console.log('--------------> finished [' +response.status + '] API [' + methodName + ']' + url + ' with body: ' + bodyParams);
       return methodName === 'delete' ? response : response.json();
     });
@@ -267,10 +272,14 @@ GoogleAPI.prototype = {
         });
       });
 
-      return {
+      const ret = {
         slots : _.values(indexedSlots),
         resources : freeBusy.resources
       };
+      
+      logJSON(ret, 'groupedFreeSlotList');
+      
+      return ret;      
     });
   }
 

@@ -44,7 +44,8 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    this.props.actions._authenticateMock('code');
+    // this.props.actions._authenticateMock('code');
+    // logJSON(this.props.actions.authenticate, "this.props.actions.authenticate");
   }
   
   render () {
@@ -52,7 +53,7 @@ class Login extends React.Component {
     // logJSON(actions, "\n\n\nactions");
     let component = <LoginView 
         client_id={secret.google.client_id} 
-        onCode={actions._authenticateMock}
+        onCode={actions.authenticate}
       />;
     return (
       component

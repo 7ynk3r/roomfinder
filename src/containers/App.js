@@ -26,7 +26,7 @@ function mapDispatchToProps(dispatch) {
           .merge(...actions)
           .filter(value => typeof value === 'function')
           .toObject();
-
+9
   return {
     actions: bindActionCreators(creators, dispatch),
     dispatch
@@ -44,12 +44,15 @@ class App extends React.Component {
   render () {
     // LayoutAnimation.linear();
 
-    // const auth = this.props.auth;
-    // const component = !auth.authenticated 
-    //   ? <Login />
-    //   : <Calendar />
+    const auth = this.props.auth;
+    const component = !auth.authenticated 
+      ? <Login />
+      : <Calendar />
 
-    const component = <Calendar />
+    // const component = <Calendar />
+
+    // logJSON(this.props.auth, "this.props.auth");
+    // const component = <Login />
 
 
     return (
