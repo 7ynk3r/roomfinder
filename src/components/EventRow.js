@@ -123,7 +123,7 @@ class EventRow extends React.Component {
       }
       else {
         logJSON(this.props.onPress, 'this.props.onPress');
-        this.props.onPress(event.id);
+        this.props.onPress();
       }
     }
     

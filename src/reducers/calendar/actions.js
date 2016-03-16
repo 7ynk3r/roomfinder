@@ -4,6 +4,7 @@ import logJSON from '../../logJSON'
 import { _promiseActionThunk, _makeReadyAction, _delay} from '../common/actions.js'
 import getEventsMockData from '../../__mocks__/googleapi-org'
 import googleapi from '../../lib/googleapi'
+import XDate from 'xdate'
 
 import { 
   GET_EVENTS, 
@@ -22,9 +23,14 @@ export const _getEvents = () => {
 export const getEvents = () => {
   logJSON(googleapi.groupedFreeSlotList, 'getEvents');
   const action = _getEvents();
-  const now = new Date();
-  const timeMin = new Date(now.setHours(6,0,0,0));
-  const timeMax = new Date(now.setHours(20,0,0,0));
+  // let now = new XDate();
+  // if (now.getHours()>19) {
+  //   now = now.addDays(1);
+  // }
+  const now = new XDate('2016-12-31')
+  logJSON(now, "\n\n\n\n\n\nnow")
+  const timeMin = new Date(now.setHours(8,0,0,0));
+  const timeMax = new Date(now.setHours(19,0,0,0));
   const promise = googleapi.groupedFreeSlotList(timeMin, timeMax, 15, 30, 10);
   return _promiseActionThunk(promise, action);
 }
@@ -36,9 +42,9 @@ export const _takeEvent = eventId => {
   };
 }
 
-export const takeEvent = eventId => {
-  const action = _takeEvent(eventId);
-  const promise = undefined; // googleapi.insertEvent(calendarId, summary, start, end);
+export const takeEvent = event => {
+  const action = _takeEvent(event.id);
+  const promise = googleapi.insertEvent(event.resource.id, "roomfinder", event.slot.start, event.slot.end);
   return _promiseActionThunk(promise, action);
 }
 
@@ -49,9 +55,9 @@ export const _freeEvent = eventId => {
   };
 }
 
-export const freeEvent = eventId => {
-  const action = _freeEvent(eventId);
-  const promise = undefined;
+export const freeEvent = event => {
+  const action = _freeEvent(event.id);
+  const promise = googleapi.deleteEvent(event.serverId);
   return _promiseActionThunk(promise, action);
 }
 

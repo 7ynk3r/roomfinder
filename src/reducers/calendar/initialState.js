@@ -24,7 +24,7 @@ const Event = Record({
   id : '',
   slotId : 0,
   resourceId : 0,
-  serverId : 0,
+  serverId : '',
   taken : false
 });
 
@@ -49,14 +49,20 @@ const Resource = Record({
 // Calendar creator
 
 export const createCalendar = (events=[], slots=[], resources=[], ready=false) => {
+  logJSON(events, "\n\n\n\nevents"); // no events
+  logJSON(slots, "\n\n\n\nslots");
+  logJSON(resources, "\n\n\n\nresources");
+
   var events = _.each(events, (e) => {
     e.id = e.resourceId + '|' + e.slotId;
-    e.taken = (e.eventId || 0) > 0;
+    e.taken = e.eventId !== undefined;
     if (e.taken) {
       e.serverId = e.eventId;
       delete e.eventId
     }
   });
+  
+  logJSON(events, "\n\n\n\n\nevents<<<<<<");
   
   _.each(slots, s => { delete s.calendars; });
   

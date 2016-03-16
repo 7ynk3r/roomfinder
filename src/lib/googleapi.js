@@ -38,7 +38,7 @@ GoogleAPI.prototype = {
       return response.json();
     })  
     .then(function(data) {  
-      console.log('Request succeeded with JSON response', JSON.stringify(data));  
+      // console.log('Request succeeded with JSON response', JSON.stringify(data));  
       that.access_token = data.access_token;
       that.authorization = 'Bearer ' + data.access_token;
     });
@@ -77,7 +77,7 @@ GoogleAPI.prototype = {
 
     return this.calendarList()
     .then(function(data) {
-      console.log("resourcesList data " + data);
+      // console.log("resourcesList data " + data);
       return _.filter(data.items, (item) => that.isResourceEmail(item.id));
     });
   },
@@ -122,15 +122,16 @@ GoogleAPI.prototype = {
     return that
     .resourcesList()
     .then(function(rs) {
-      console.log("freeSlotList rs " + rs)
+      // console.log("freeSlotList rs " + rs)
       context.resources = rs;
       return _.map(rs, (r) => r.id);
     })
     .then(function(items) {
-      console.log("freeSlotList items " + JSON.stringify(items));
+      // console.log("freeSlotList items " + JSON.stringify(items));
       return that.freeBusyQuery(timeMin, timeMax, items);
     })
     .then(function(slots) {
+      // logJSON(slots, "\n\n\n\nslots");
       var timeMin = slots.timeMin;
       var timeMax = slots.timeMax;
       var calendars = slots.calendars;
@@ -143,7 +144,7 @@ GoogleAPI.prototype = {
             calendars[calendarId].busy,
             stepSize,
             slotSize,
-            slotsMax)
+            slotsMax) 
         };
       }
       
@@ -156,6 +157,8 @@ GoogleAPI.prototype = {
         .then(function(events) {
           var primaryCalendarId = events.summary;
           var ownedEventItems = _.filter(events.items, (event) => event.creator && primaryCalendarId === event.creator.email);          
+
+          // logJSON(ownedEventItems, "\n\n\n\nownedEventItems");
 
           _.each(ownedEventItems, (event) => {
             // resource contains a meeting room that accepted the event of the primary user.
@@ -183,6 +186,8 @@ GoogleAPI.prototype = {
               }
             }
           });
+
+          // logJSON(slots, "\n\n\n\nslots<<<<<<<");
         
           var result = {
             resources : resources,
@@ -253,8 +258,7 @@ GoogleAPI.prototype = {
     return this
     .freeSlotList(timeMin, timeMax, stepSize, slotSize, slotsMax)
     .then(function(freeBusy) {
-      var slots = freeBusy.slots;
-      var calendarsSlots = slots.calendars;      
+      var calendarsSlots = freeBusy.slots.calendars;      
       var indexedSlots = {};
       _.each(calendarsSlots, (calendarSlots, calendarId) => {
         _.each((calendarSlots.available||[]).concat(calendarSlots.taken||[]), (slot) => {
@@ -271,13 +275,18 @@ GoogleAPI.prototype = {
           gslot.calendars[calendarId] = {eventId:slot.eventId};
         });
       });
+      
+      const slots = _.values(indexedSlots);
+      const resources = freeBusy.resources;
+      const events = _.flatten(_.map(slots, (s)=> _.map(_.keys(s.calendars), (rid) => { return { 'slotId':s.id, 'resourceId':rid, 'eventId':s.calendars[rid].eventId } } )));
 
       const ret = {
-        slots : _.values(indexedSlots),
-        resources : freeBusy.resources
+        slots,
+        resources,
+        events
       };
       
-      logJSON(ret, 'groupedFreeSlotList');
+      logJSON(ret, '\n\n\n\n\ngroupedFreeSlotList<<<<<');
       
       return ret;      
     });

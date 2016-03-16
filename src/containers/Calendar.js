@@ -84,8 +84,8 @@ class Calendar extends React.Component {
           style={styles.eventList}
           calendar={calendar}
           onGetEvents={actions.getEvents}
-          onTakeEvent={actions._takeEventMock}
-          onFreeEvent={actions._freeEventMock}
+          onTakeEvent={actions.takeEvent}
+          onFreeEvent={actions.freeEvent}
           onClearEventErrors={actions.clearEventErrors}
         />
       </View>
