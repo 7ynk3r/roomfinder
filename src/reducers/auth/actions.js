@@ -19,7 +19,7 @@ export const authenticate = code => {
     secret.google.client_id,
     secret.google.client_secret
   );  
-  return promiseActionThunk(promise, action);
+  return _promiseActionThunk(promise, action);
 }
 
 // Mock

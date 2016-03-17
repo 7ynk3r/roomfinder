@@ -2,25 +2,29 @@
 
 var _ = require('underscore');
 var GoogleAPI = function() {}
+import logJSON from '../logJSON'
 
 GoogleAPI.prototype = {
 
-  init : function(code, client_id, client_secret) {
-    this.code = code;
-    this.client_id = client_id;
-    this.client_secret = client_secret;
-  },
+  // init : function(code, client_id, client_secret) {
+  //   this.code = code;
+  //   this.client_id = client_id;
+  //   this.client_secret = client_secret;
+  // },
 
   // base ////////////////////////////////
 
-  authenticate : function() {
+  authenticate : function(code, client_id, client_secret) {
     var that = this;
     var body = 
-      "code=" + this.code +
-      "&client_id=" + this.client_id + 
-      "&client_secret=" + this.client_secret +
+      "code=" + code +
+      "&client_id=" + client_id + 
+      "&client_secret=" + client_secret +
       "&redirect_uri=" + "http://localhost" +
       "&grant_type=" + "authorization_code";
+      
+    // console.log('authenticate body', body);  
+
     
     return fetch('https://www.googleapis.com/oauth2/v3/token', {  
       method: 'post',  
@@ -34,7 +38,7 @@ GoogleAPI.prototype = {
       return response.json();
     })  
     .then(function(data) {  
-      console.log('Request succeeded with JSON response', JSON.stringify(data));  
+      // console.log('Request succeeded with JSON response', JSON.stringify(data));  
       that.access_token = data.access_token;
       that.authorization = 'Bearer ' + data.access_token;
     });
@@ -43,8 +47,8 @@ GoogleAPI.prototype = {
   callApi: function(url, methodName, body) {
     var bodyParams = body ? JSON.stringify(body) : null;
 
-    console.log('--------------> calling API [' + methodName + ']' + url + ' with body: ' + bodyParams);
-
+    console.log('--------------> started calling API [' + methodName + ']' + url + ' with body: ' + bodyParams + ' authorization: \'' + this.authorization + '\'');
+    
     return fetch(url, {
       method: methodName,  
       headers: {  
@@ -55,6 +59,7 @@ GoogleAPI.prototype = {
       body: bodyParams
     })
     .then(function(response) {  
+      // const json = JSON.stringify(response.json() || {});
       console.log('--------------> finished [' +response.status + '] API [' + methodName + ']' + url + ' with body: ' + bodyParams);
       return methodName === 'delete' ? response : response.json();
     });
@@ -72,7 +77,7 @@ GoogleAPI.prototype = {
 
     return this.calendarList()
     .then(function(data) {
-      console.log("resourcesList data " + data);
+      // console.log("resourcesList data " + data);
       return _.filter(data.items, (item) => that.isResourceEmail(item.id));
     });
   },
@@ -117,15 +122,16 @@ GoogleAPI.prototype = {
     return that
     .resourcesList()
     .then(function(rs) {
-      console.log("freeSlotList rs " + rs)
+      // console.log("freeSlotList rs " + rs)
       context.resources = rs;
       return _.map(rs, (r) => r.id);
     })
     .then(function(items) {
-      console.log("freeSlotList items " + JSON.stringify(items));
+      // console.log("freeSlotList items " + JSON.stringify(items));
       return that.freeBusyQuery(timeMin, timeMax, items);
     })
     .then(function(slots) {
+      // logJSON(slots, "\n\n\n\nslots");
       var timeMin = slots.timeMin;
       var timeMax = slots.timeMax;
       var calendars = slots.calendars;
@@ -138,7 +144,7 @@ GoogleAPI.prototype = {
             calendars[calendarId].busy,
             stepSize,
             slotSize,
-            slotsMax)
+            slotsMax) 
         };
       }
       
@@ -151,6 +157,8 @@ GoogleAPI.prototype = {
         .then(function(events) {
           var primaryCalendarId = events.summary;
           var ownedEventItems = _.filter(events.items, (event) => event.creator && primaryCalendarId === event.creator.email);          
+
+          // logJSON(ownedEventItems, "\n\n\n\nownedEventItems");
 
           _.each(ownedEventItems, (event) => {
             // resource contains a meeting room that accepted the event of the primary user.
@@ -178,6 +186,8 @@ GoogleAPI.prototype = {
               }
             }
           });
+
+          // logJSON(slots, "\n\n\n\nslots<<<<<<<");
         
           var result = {
             resources : resources,
@@ -248,8 +258,7 @@ GoogleAPI.prototype = {
     return this
     .freeSlotList(timeMin, timeMax, stepSize, slotSize, slotsMax)
     .then(function(freeBusy) {
-      var slots = freeBusy.slots;
-      var calendarsSlots = slots.calendars;      
+      var calendarsSlots = freeBusy.slots.calendars;      
       var indexedSlots = {};
       _.each(calendarsSlots, (calendarSlots, calendarId) => {
         _.each((calendarSlots.available||[]).concat(calendarSlots.taken||[]), (slot) => {
@@ -266,11 +275,20 @@ GoogleAPI.prototype = {
           gslot.calendars[calendarId] = {eventId:slot.eventId};
         });
       });
+      
+      const slots = _.values(indexedSlots);
+      const resources = freeBusy.resources;
+      const events = _.flatten(_.map(slots, (s)=> _.map(_.keys(s.calendars), (rid) => { return { 'slotId':s.id, 'resourceId':rid, 'eventId':s.calendars[rid].eventId } } )));
 
-      return {
-        slots : _.values(indexedSlots),
-        resources : freeBusy.resources
+      const ret = {
+        slots,
+        resources,
+        events
       };
+      
+      logJSON(ret, '\n\n\n\n\ngroupedFreeSlotList<<<<<');
+      
+      return ret;      
     });
   }
 
