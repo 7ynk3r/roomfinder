@@ -40,5 +40,5 @@ export default platform => {
     }
   });
 
-  AppRegistry.registerComponent('Root', () => Root);
+  AppRegistry.registerComponent('roomfinder', () => Root);
 }
