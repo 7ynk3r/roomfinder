@@ -17,6 +17,14 @@ export const _makeReadyAction = (action, ready, result={}, errors=[]) => {
   return Object.assign({}, action, { ready, result, errors, hasErrors })
 }
 
+export const _dispatchPromiseAction = (dispatch, promise, action) => {
+  dispatch(_makeReadyAction(action, false));
+  promise.then(
+    result => dispatch(_makeReadyAction(action, true, result)),
+    error => dispatch(_makeReadyAction(action, true, undefined, [error]))
+  );  
+}
+
 export const _promiseActionThunk = (promise, action, validate) => {
   return (dispatch, getState) => {
     // Validation
@@ -28,11 +36,7 @@ export const _promiseActionThunk = (promise, action, validate) => {
       return;
     }    
     // Execute
-    dispatch(_makeReadyAction(action, false));
-    promise.then(
-      result => dispatch(_makeReadyAction(action, true, result)),
-      error => dispatch(_makeReadyAction(action, true, undefined, [error]))
-    );
+    _dispatchPromiseAction(dispatch, promise, action);
   };
 }
 
