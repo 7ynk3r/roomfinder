@@ -49,7 +49,7 @@ export default (state = initialState, action = {}) => {
       state = state.set('slotSize', slotSize);
       break;
   }
-  logJSON(type, "calendar.reducer [finished]")
+  logJSON(type, "calendar.reducer [finished]");
   
   return state;
 }

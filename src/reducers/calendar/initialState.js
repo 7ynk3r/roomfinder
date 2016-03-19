@@ -17,7 +17,7 @@ const Calendar = Record({
   slotSizes : List([15,30,45]),
   slotSize : 30,  
   stepSize : 15,
-  slotsMax : 10,
+  slotsMax : 5,
 });
 
 const Event = Record({
