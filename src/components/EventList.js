@@ -15,6 +15,7 @@ import React, {
   View, 
   Text, 
   ListView, 
+  AppStateIOS,
 } from 'react-native';
 
 export default class extends React.Component {
@@ -67,12 +68,26 @@ export default class extends React.Component {
       dataSource: ds.cloneWithRows([])
     };
   }
+  
+  _handleAppStateChange(appState) {
+    logJSON(appState, '\n\n\n\n\nappState');
+    if (appState === 'active') {
+      this.props.onGetEvents();
+    }
+  }
     
   componentDidMount() {
     logJSON('EventList.componentDidMount');
+    AppStateIOS.addEventListener('change', this._handleAppStateChange.bind(this));
     // Initial load.
     this.props.onGetEvents();
     this.componentWillReceiveProps(this.props);
+  }
+  
+  componentWillUnmount() {
+    logJSON('EventList.componentWillUnmount');
+    AppStateIOS.removeEventListener('change', this._handleAppStateChange.bind(this));    
+    this.componentWillUnmount(this.props);
   }
 
   componentWillReceiveProps(props) {
