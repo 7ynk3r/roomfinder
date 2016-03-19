@@ -1,7 +1,12 @@
 'use strict';
 
 import logJSON from '../../logJSON'
-import { _promiseActionThunk, _makeReadyAction, _delay} from '../common/actions.js'
+import { 
+  _promiseActionThunk, 
+  _dispatchPromiseAction,
+  _makeReadyAction, 
+  _delay
+} from '../common/actions.js'
 import getEventsMockData from '../../__mocks__/googleapi-org'
 import googleapi from '../../lib/googleapi'
 import XDate from 'xdate'
@@ -20,9 +25,11 @@ export const _getEvents = () => {
   };
 }
 
-export const getEvents = () => {
+export const getEvents = () => (dispatch, getState) => {
   logJSON(googleapi.groupedFreeSlotList, 'getEvents');
+  const state = getState();
   const action = _getEvents();
+  
   // let now = new XDate();
   // if (now.getHours()>19) {
   //   now = now.addDays(1);
@@ -31,8 +38,11 @@ export const getEvents = () => {
   logJSON(now, "\n\n\n\n\n\nnow")
   const timeMin = new Date(now.setHours(8,0,0,0));
   const timeMax = new Date(now.setHours(19,0,0,0));
-  const promise = googleapi.groupedFreeSlotList(timeMin, timeMax, 15, 30, 10);
-  return _promiseActionThunk(promise, action);
+  const stepSize = state.calendar.stepSize; 
+  const slotSize = state.calendar.slotSize;
+  const slotsMax = state.calendar.slotsMax;
+  const promise = googleapi.groupedFreeSlotList(timeMin, timeMax, stepSize, slotSize, slotsMax);
+  _dispatchPromiseAction(dispatch, promise, action);
 }
 
 export const _takeEvent = eventId => {
@@ -69,12 +79,19 @@ export const clearEventErrors = eventId => {
   return _makeReadyAction(action, true, undefined, []);
 }
 
-export const changeSlotSize = slotSize => {
+export const _changeSlotSize = slotSize => {
   return {
     type: CHANGE_SLOT_SIZE,
     slotSize
   };
 }
+
+export const changeSlotSize = slotSize => (dispatch, getState) => {
+  const action = _changeSlotSize(slotSize);
+  dispatch(action);
+  getEvents();
+}
+
 
 // mocks
 
