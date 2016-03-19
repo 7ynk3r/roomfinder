@@ -93,6 +93,23 @@ GoogleAPI.prototype = {
   deleteEvent: function(eventId) {
     return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events/' + eventId, 'delete');
   },
+  
+  /**
+
+@returns
+{
+  "kind": "calendar#freeBusy",
+  "timeMin": "2016-12-31T16:15:00.000Z",
+  "timeMax": "2016-12-31T16:45:00.000Z",
+  "calendars": {
+    "medallia.com_3436313935323233373333@resource.calendar.google.com": {
+      "busy": [
+        
+      ]
+    }
+  }
+}
+  */
 
   freeBusyQuery: function(start, end, calendarIds) {
     var calendars = [];

@@ -54,7 +54,17 @@ export const _takeEvent = eventId => {
 
 export const takeEvent = event => {
   const action = _takeEvent(event.id);
-  const promise = googleapi.insertEvent(event.resource.id, "roomfinder", event.slot.start, event.slot.end);
+  const resource = event.resource.id;
+  const promise = googleapi.freeBusyQuery(event.slot.start, event.slot.end, [resource])
+  .then(result => {
+      // validate that the slot it's available.
+      const busy = result.calendars[resource].busy;
+      const isBusy = Array.isArray(busy) && busy.length !== 0;
+      if (isBusy) {
+        return Promise.reject('The event is not available.');
+      }      
+      return googleapi.insertEvent(resource, "roomfinder", event.slot.start, event.slot.end);
+  });
   return _promiseActionThunk(promise, action);
 }
 
@@ -71,10 +81,10 @@ export const freeEvent = event => {
   return _promiseActionThunk(promise, action);
 }
 
-export const clearEventErrors = eventId => {
+export const clearEventErrors = event => {
   const action = {
     type: CLEAR_EVENT_ERRORS,
-    eventId
+    eventId : event.id,
   };
   return _makeReadyAction(action, true, undefined, []);
 }

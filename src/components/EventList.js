@@ -129,15 +129,15 @@ export default class extends React.Component {
     
     
     // Take/Free event.
-    const noop = () => console.log('noop');
-    const onPress = (event) => 
-      event.errors.length > 0 
-      ? this.props.onClearEventErrors 
-      : !event.ready 
-        ? noop 
-        : event.taken 
-          ? (() => this.props.onFreeEvent(event)) 
-          : (() => this.props.onTakeEvent(event));
+    const onPress = (event) => () => {
+      // Determine the action to take
+      const action =
+        !event.ready ? () => console.log('noop') : 
+        event.errors.length > 0 ? this.props.onClearEventErrors : 
+        event.taken ? this.props.onFreeEvent : this.props.onTakeEvent;
+      // Execute the action.
+      action(event);
+    };
 
     return (
       <ListView
