@@ -178,6 +178,7 @@ var styles = StyleSheet.create({
     paddingBottom: theme.smallSize,
     paddingLeft: theme.largeSize,
     paddingRight: theme.largeSize,
+    backgroundColor: theme.primaryBackgroundColor,
   },
   row : {
     marginLeft: theme.largeSize,
