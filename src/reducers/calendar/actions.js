@@ -30,14 +30,22 @@ export const getEvents = () => (dispatch, getState) => {
   const state = getState();
   const action = _getEvents();
   
-  // let now = new XDate();
+  
+  let now = new XDate();
   // if (now.getHours()>19) {
   //   now = now.addDays(1);
   // }
-  const now = new XDate('2016-12-31')
+  
+  // For testing with a fixed date.
+  // const now = new XDate('2016-12-31')
+  
   logJSON(now, "\n\n\n\n\n\nnow")
-  const timeMin = new Date(now.setHours(8,0,0,0));
-  const timeMax = new Date(now.setHours(19,0,0,0));
+  // minutes
+  const minutes = Math.round(now.getMinutes()/15)*15;
+  // min and max
+  const timeMin = new XDate(now.setMinutes(minutes,0,0));
+  const timeMax = new XDate(timeMin).addHours(4);
+  // other parameters
   const stepSize = state.calendar.stepSize; 
   const slotSize = state.calendar.slotSize;
   const slotsMax = state.calendar.slotsMax;
