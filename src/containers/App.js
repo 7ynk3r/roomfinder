@@ -26,7 +26,7 @@ function mapDispatchToProps(dispatch) {
           .merge(...actions)
           .filter(value => typeof value === 'function')
           .toObject();
-9
+
   return {
     actions: bindActionCreators(creators, dispatch),
     dispatch
