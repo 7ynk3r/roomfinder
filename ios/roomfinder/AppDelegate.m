@@ -54,4 +54,31 @@
   return YES;
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+  [self persistCookies];
+}
+
+/**
+ * Will make the cookies persistent so we don't have to log into google every time
+ * the app is restarted.
+ */
+- (void)persistCookies
+{
+  NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+  
+  for (NSHTTPCookie *cookie in cookieStorage.cookies) {
+    NSLog(@"cookie %@", cookie);
+    
+    NSMutableDictionary *cookieProps = cookie.properties.mutableCopy;
+    NSDate *expiration = [NSDate dateWithTimeIntervalSinceNow:30*24*60*60];
+    // Set the expiration and remove discard to allow the cookie to live across sessions.
+    [cookieProps setValue:expiration forKey:NSHTTPCookieExpires];
+    [cookieProps removeObjectForKey:NSHTTPCookieDiscard];
+    
+    NSHTTPCookie *persistentCookie = [NSHTTPCookie cookieWithProperties:cookieProps];
+    [cookieStorage setCookie:persistentCookie];
+  }
+}
+
 @end
