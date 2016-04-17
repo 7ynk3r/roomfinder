@@ -1,3 +1,5 @@
+// @flow
+
 'use strict';
 
 import { AUTHENTICATE } from './actionTypes'
@@ -5,36 +7,28 @@ import { _promiseActionThunk, _makeReadyAction, _delay } from '../common/actions
 import secret from './secret'
 import googleapi from '../../lib/googleapi'
 
-export const _authenticate = code => {
+export const _authenticate = (code:string) => {
   return {
     type: AUTHENTICATE,
     code
   };
 }
 
-export const authenticate = code => {
+export const authenticate = (code:string) => {
   const action = _authenticate(code);
   let credentialsX;
   const promise = googleapi.authenticate(
     code,
     secret.google.client_id,
     secret.google.client_secret
-  )
-  .then((credentials)=>{
-    credentialsX = credentials;
-    debugger;
-    return googleapi.calendars();
-  })
-  .then((calendars)=>{
-    debugger;
-    return credentials;
-  });
+  );
+
   return _promiseActionThunk(promise, action);
 }
 
 // Mock
 
-export const _authenticateMock = code => {
+export const _authenticateMock = (code:string) => {
   const action = _authenticate(code);
   const result = {};
   const promise = _delay(2000).then(()=>Promise.resolve(result));

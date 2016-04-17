@@ -15,16 +15,16 @@ GoogleAPI.prototype = {
 
   authenticate : function(code, client_id, client_secret) {
     var that = this;
-    var body = 
+    var body =
       "code=" + code +
-      "&client_id=" + client_id + 
+      "&client_id=" + client_id +
       "&client_secret=" + client_secret +
       "&redirect_uri=" + "http://localhost" +
       "&grant_type=" + "authorization_code";
-    
-    return fetch('https://www.googleapis.com/oauth2/v3/token', {  
-      method: 'post',  
-      headers: {  
+
+    return fetch('https://www.googleapis.com/oauth2/v3/token', {
+      method: 'post',
+      headers: {
         "Content-type" : "application/x-www-form-urlencoded",
       },
       body:body,
@@ -32,9 +32,9 @@ GoogleAPI.prototype = {
     })
     .then(function(response) {
       return response.json();
-    })  
-    .then(function(data) {  
-      console.log('Request succeeded with JSON response', JSON.stringify(data));  
+    })
+    .then(function(data) {
+      console.log('Request succeeded with JSON response', JSON.stringify(data));
       that.access_token = data.access_token;
       that.authorization = 'Bearer ' + data.access_token;
     });
@@ -46,19 +46,25 @@ GoogleAPI.prototype = {
     console.log('--------------> calling API [' + methodName + ']' + url + ' with body: ' + bodyParams);
 
     return fetch(url, {
-      method: methodName,  
-      headers: {  
+      method: methodName,
+      headers: {
         'Authorization': this.authorization,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       body: bodyParams
     })
-    .then(function(response) {  
+    .then(function(response) {
       console.log('--------------> finished [' +response.status + '] API [' + methodName + ']' + url + ' with body: ' + bodyParams);
       return methodName === 'delete' ? response : response.json();
     });
   },
+
+
+
+
+
+
 
   // rest calls ////////////////////////////////
 
@@ -80,7 +86,7 @@ GoogleAPI.prototype = {
   listEvents: function(timeMin, timeMax) {
     return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=' + timeMin.toJSON() + '&timeMax=' + timeMax.toJSON(), 'get');
   },
-  
+
   insertEvent: function(calendarId, summary, start, end) {
     var params = {};
     params['start'] = {'dateTime': start};
@@ -93,7 +99,7 @@ GoogleAPI.prototype = {
   deleteEvent: function(eventId) {
     return this.callApi('https://www.googleapis.com/calendar/v3/calendars/primary/events/' + eventId, 'delete');
   },
-  
+
   /**
 
 @returns
@@ -104,7 +110,7 @@ GoogleAPI.prototype = {
   "calendars": {
     "medallia.com_3436313935323233373333@resource.calendar.google.com": {
       "busy": [
-        
+
       ]
     }
   }
@@ -121,16 +127,41 @@ GoogleAPI.prototype = {
     params['items'] = calendars;
     return this.callApi('https://www.googleapis.com/calendar/v3/freeBusy', 'post', params);
   },
-  
-  
+
+
+
+  // https://content.googleapis.com/admin/directory/v1/customer/my_customer/resources/calendars?maxResults=40&key=AIzaSyD-a9IF8KKYgoC3cpgS-Al7hLQDbugrDcw
+  calendars: function(maxResults, end, calendarIds) {
+    var calendars = [];
+    _.each(calendarIds, (calendarId) => calendars.push({'id' : calendarId}));
+
+    var params = {};
+    // params['timeMin'] = start;
+    // params['timeMax'] = end;
+    // params['items'] = calendars;
+    return this.callApi('https://content.googleapis.com/admin/directory/v1/customer/my_customer/resources/calendars', 'post', params);
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
   // business calls ////////////////////////////////
-  
+
   freeSlotList : function(timeMin, timeMax, stepSize, slotSize, slotsMax) {
     console.log("freeSlotList");
-    
+
     var that = this;
     var context = {};
-    
+
     return that
     .resourcesList()
     .then(function(rs) {
@@ -146,7 +177,7 @@ GoogleAPI.prototype = {
       var timeMin = slots.timeMin;
       var timeMax = slots.timeMax;
       var calendars = slots.calendars;
-      
+
       for(var calendarId in calendars) {
         calendars[calendarId] = {
           available : that.freeSlotListForCalendar(
@@ -158,7 +189,7 @@ GoogleAPI.prototype = {
             slotsMax)
         };
       }
-      
+
       return slots;
     })
     .then(function(slots) {
@@ -167,7 +198,7 @@ GoogleAPI.prototype = {
         .listEvents(timeMin, timeMax)
         .then(function(events) {
           var primaryCalendarId = events.summary;
-          var ownedEventItems = _.filter(events.items, (event) => event.creator && primaryCalendarId === event.creator.email);          
+          var ownedEventItems = _.filter(events.items, (event) => event.creator && primaryCalendarId === event.creator.email);
 
           _.each(ownedEventItems, (event) => {
             // resource contains a meeting room that accepted the event of the primary user.
@@ -195,7 +226,7 @@ GoogleAPI.prototype = {
               }
             }
           });
-        
+
           var result = {
             resources : resources,
             slots : slots
@@ -217,13 +248,13 @@ GoogleAPI.prototype = {
   isResourceEmail: function(email) {
     return email.endsWith('@resource.calendar.google.com');
   },
-  
+
   freeSlotListForCalendar : function(timeMin, timeMax, busy, stepSize, slotSize, slotsMax) {
     var timeMin = new Date(timeMin);
     var timeMax = new Date(timeMax);
     var mins = 60000;
     var available = []; // return;
-    
+
     // TODO[CHECK]: 'busy' is being overrided.
     // create a new busy with dates
     busy = _.map(busy, (b) => {
@@ -239,7 +270,7 @@ GoogleAPI.prototype = {
         start : timeMax
       }];
     }
-    
+
     for (var start = timeMin; start < timeMax && available.length < slotsMax; start = new Date(start.getTime() + stepSize * mins)) {
       var end = new Date(start.getTime() + slotSize * mins);
       var isBusy = _.some(busy, function(b) {
@@ -255,18 +286,18 @@ GoogleAPI.prototype = {
           end : end
         });
       }
-      
+
     }
-    return available; 
+    return available;
   },
-    
+
   groupedFreeSlotList : function(timeMin, timeMax, stepSize, slotSize, slotsMax) {
-    
+
     return this
     .freeSlotList(timeMin, timeMax, stepSize, slotSize, slotsMax)
     .then(function(freeBusy) {
       var slots = freeBusy.slots;
-      var calendarsSlots = slots.calendars;      
+      var calendarsSlots = slots.calendars;
       var indexedSlots = {};
       _.each(calendarsSlots, (calendarSlots, calendarId) => {
         _.each((calendarSlots.available||[]).concat(calendarSlots.taken||[]), (slot) => {
