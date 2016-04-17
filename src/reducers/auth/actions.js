@@ -14,11 +14,21 @@ export const _authenticate = code => {
 
 export const authenticate = code => {
   const action = _authenticate(code);
+  let credentialsX;
   const promise = googleapi.authenticate(
     code,
     secret.google.client_id,
     secret.google.client_secret
-  );  
+  )
+  .then((credentials)=>{
+    credentialsX = credentials;
+    debugger;
+    return googleapi.calendars();
+  })
+  .then((calendars)=>{
+    debugger;
+    return credentials;
+  });
   return _promiseActionThunk(promise, action);
 }
 

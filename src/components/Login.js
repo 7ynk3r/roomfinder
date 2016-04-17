@@ -16,19 +16,19 @@ var {
 var urlparser = require('../lib/urlparser');
 
 var Login = React.createClass({
-  
-  propTypes: { 
+
+  propTypes: {
     client_id: React.PropTypes.string.isRequired,
     onCode: React.PropTypes.func.isRequired,
   },
 
-  onNavigationStateChange(navState) {   
-    var parsed_url = urlparser.parse(navState.url);        
+  onNavigationStateChange(navState) {
+    var parsed_url = urlparser.parse(navState.url);
     if (parsed_url.path === 'http://localhost/') {
        this.props.onCode(parsed_url.params.code);
     }
   },
-  
+
   renderError() {
     // show no error
     return (
@@ -37,16 +37,16 @@ var Login = React.createClass({
   },
 
   render() {
-    var authorization_url 
-    = 'https://accounts.google.com/o/oauth2/auth' 
-    + '?client_id=' + this.props.client_id 
-    + '&redirect_uri=' + 'http%3A%2F%2Flocalhost' 
+    var authorization_url
+    = 'https://accounts.google.com/o/oauth2/auth'
+    + '?client_id=' + this.props.client_id
+    + '&redirect_uri=' + 'http%3A%2F%2Flocalhost'
     + '&response_type=' + 'code'
-    + '&scope=' + 'https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar' 
+    + '&scope=' + 'https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fadmin.directory.resource.calendar.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar' 
     + '&access_type=' + 'offline';
-    
+
     logJSON(authorization_url, "authorization_url");
-    
+
     return (
       <WebView
         url={authorization_url}
