@@ -5,29 +5,22 @@
 import logJSON from '../logJSON'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Map } from 'immutable';
 import React from 'react-native';
 // Components
 import LoginView from '../components/Login'
-import secret from '../reducers/auth/secret'
+import secret from '../config/secret'
 // Actions
-// import * as authActions from '../reducers/auth/actions';
 import * as authActions from '../actions/auth';
 
-const actions = [ authActions ];
+const actions = authActions;
 
 function mapStateToProps(state) {
-  console.log('mapStateToProps ' + JSON.stringify(state));
   return { ...state };
 };
 
 function mapDispatchToProps(dispatch) {
-  const creators = Map()
-          .merge(...actions)
-          .filter(value => typeof value === 'function')
-          .toObject();
   return {
-    actions: bindActionCreators(creators, dispatch),
+    actions: bindActionCreators(actions, dispatch),
     dispatch
   };
 }

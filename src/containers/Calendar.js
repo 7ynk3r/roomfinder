@@ -24,19 +24,20 @@ const actions = [
 
 const mapStateToProps = state => {
 
-  logJSON(state.auth, "state.auth")
+  // logJSON(state.auth, "state.auth")
+  //
+  // const calendar = state.calendar.toJS();
+  // const events = _.values(calendar.eventById);
+  // const eventsBySlotId = _.groupBy(events, 'slotId');
+  // const slotIds = _.sortBy(_.keys(eventsBySlotId), sid => calendar.slotById[sid].start);
+  // const slotEventIds = _.map(slotIds, sid => _.pluck(eventsBySlotId[sid], 'id'));
+  // const slotSizes = calendar.slotSizes;
+  // const slotSize = calendar.slotSize;
+  // return { 'calendar' : {
+  //   ...calendar, slotIds, slotEventIds, slotSizes, slotSize
+  // }};
 
-  const calendar = state.calendar.toJS();
-  const events = _.values(calendar.eventById);
-  const eventsBySlotId = _.groupBy(events, 'slotId');
-  const slotIds = _.sortBy(_.keys(eventsBySlotId), sid => calendar.slotById[sid].start);
-  const slotEventIds = _.map(slotIds, sid => _.pluck(eventsBySlotId[sid], 'id'));
-  const slotSizes = calendar.slotSizes;
-  const slotSize = calendar.slotSize;
-  return { 'calendar' : {
-    ...calendar, slotIds, slotEventIds, slotSizes, slotSize
-  }};
-
+  return { ...state };
 };
 
 const mapDispatchToProps = dispatch => {
