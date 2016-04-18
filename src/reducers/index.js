@@ -1,12 +1,13 @@
+// @flow
 'use string';
 
-import calendar from './calendar/reducer';
-import auth from './calendar/auth';
+// import calendar from './calendar/reducer';
+import auth from './auth/reducer';
 
 import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({
-  calendar,
+  // calendar,
   auth,
 });
 

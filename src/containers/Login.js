@@ -1,37 +1,31 @@
+// @flow
 'use strict';
 
 // Base
 import logJSON from '../logJSON'
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux/native';
+import { connect } from 'react-redux';
 import { Map } from 'immutable';
-import React, { View, StyleSheet } from 'react-native';
-
+import React from 'react-native';
 // Components
 import LoginView from '../components/Login'
 import secret from '../reducers/auth/secret'
+// Actions
+// import * as authActions from '../reducers/auth/actions';
+import * as authActions from '../actions/auth';
 
-// Actions 
-import * as authActions from '../reducers/auth/actions';
-
-
-const actions = [
-  authActions
-];
+const actions = [ authActions ];
 
 function mapStateToProps(state) {
-  return {
-      ...state
-  };
+  return { ...state };
 };
 
 function mapDispatchToProps(dispatch) {
-
   const creators = Map()
           .merge(...actions)
           .filter(value => typeof value === 'function')
           .toObject();
-
+  debugger;
   return {
     actions: bindActionCreators(creators, dispatch),
     dispatch
@@ -39,28 +33,16 @@ function mapDispatchToProps(dispatch) {
 }
 
 class Login extends React.Component {
-
-  componentWillReceiveProps(props) {
-  }
-
-  componentDidMount() {
-    // this.props.actions._authenticateMock('code');
-    // logJSON(this.props.actions.authenticate, "this.props.actions.authenticate");
-  }
-  
   render () {
-    const actions = this.props.actions;    
-    // logJSON(actions, "\n\n\nactions");
-    let component = <LoginView 
-        client_id={secret.google.client_id} 
+    const actions = this.props.actions;
+    let component = <LoginView
+        client_id={secret.google.client_id}
         onCode={actions.authenticate}
       />;
     return (
       component
     );
   }
-  
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
-

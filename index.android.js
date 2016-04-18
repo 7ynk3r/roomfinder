@@ -1,5 +1,5 @@
-'use strict';
-
-import createApp from './src/createApp';
-
-createApp('android');
+// 'use strict';
+//
+// import createApp from './src/createApp';
+//
+// createApp('android');

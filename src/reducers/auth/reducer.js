@@ -9,7 +9,7 @@ export default (state = initialState, action = {}) => {
   const { type, ready, result, errors, hasErrors } = action;
 
   switch(type) {
-    case AUTHENTICATE:
+    case 'AUTHENTICATED':
       if (ready) {
         state = state.merge({errors});
         const authenticated = !hasErrors;

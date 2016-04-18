@@ -1,20 +1,21 @@
+// @flow
 'use strict';
 
 import logJSON from '../../logJSON'
-import { 
-  _promiseActionThunk, 
+import {
+  _promiseActionThunk,
   _dispatchPromiseAction,
-  _makeReadyAction, 
+  _makeReadyAction,
   _delay
 } from '../common/actions.js'
 import getEventsMockData from '../../__mocks__/googleapi-org'
 import googleapi from '../../lib/googleapi'
 import XDate from 'xdate'
 
-import { 
-  GET_EVENTS, 
-  TAKE_EVENT, 
-  FREE_EVENT, 
+import {
+  GET_EVENTS,
+  TAKE_EVENT,
+  FREE_EVENT,
   CLEAR_EVENT_ERRORS,
   CHANGE_SLOT_SIZE,
 } from './actionTypes';
@@ -29,16 +30,16 @@ export const getEvents = () => (dispatch, getState) => {
   logJSON(googleapi.groupedFreeSlotList, 'getEvents');
   const state = getState();
   const action = _getEvents();
-  
-  
+
+
   let now = new XDate();
   // if (now.getHours()>19) {
   //   now = now.addDays(1);
   // }
-  
+
   // For testing with a fixed date.
   // const now = new XDate('2016-12-31')
-  
+
   logJSON(now, "\n\n\n\n\n\nnow")
   // minutes
   const minutes = Math.round(now.getMinutes()/15)*15;
@@ -46,7 +47,7 @@ export const getEvents = () => (dispatch, getState) => {
   const timeMin = new XDate(now.setMinutes(minutes,0,0));
   const timeMax = new XDate(timeMin).addHours(4);
   // other parameters
-  const stepSize = state.calendar.stepSize; 
+  const stepSize = state.calendar.stepSize;
   const slotSize = state.calendar.slotSize;
   const slotsMax = state.calendar.slotsMax;
   const promise = googleapi.groupedFreeSlotList(timeMin, timeMax, stepSize, slotSize, slotsMax);
@@ -70,7 +71,7 @@ export const takeEvent = event => {
       const isBusy = Array.isArray(busy) && busy.length !== 0;
       if (isBusy) {
         return Promise.reject('The event is not available.');
-      }      
+      }
       return googleapi.insertEvent(resource, "roomfinder", event.slot.start, event.slot.end);
   });
   return _promiseActionThunk(promise, action);
@@ -136,4 +137,3 @@ export const _freeEventMock = eventId => {
   const promise = _delay(2000).then(()=>Promise.resolve(result));
   return _promiseActionThunk(promise, action);
 }
-

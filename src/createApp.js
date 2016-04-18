@@ -1,44 +1,35 @@
+// @flow
 'use strict';
 
-import React, { AppRegistry } from 'react-native';
-import { Provider } from 'react-redux/native';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import thunk from 'redux-thunk';
-
-// main component
+import React from 'react-native';
+import { Provider } from 'react-redux';
+import configureStore from './store/configureStore';
 import App from './containers/App';
 
-// reducers
-import calendar from './reducers/calendar/reducer';
-import auth from './reducers/auth/reducer';
-
-const createStoreWithMiddleware = applyMiddleware(
-  thunk
-)(createStore);
-
-const reducer = combineReducers({
-  calendar,
-  auth,
-});
-
-const configureStore = initialState => {
-  return createStoreWithMiddleware(reducer, initialState);
-};
-
-export default platform => {
-
-  let Root = React.createClass( {
+function createApp(): React.Component {
+  class Root extends React.Component {
+    state: {
+      isLoading: boolean,
+      store: Object
+    };
+    constructor() {
+      super();
+      this.state = {
+        isLoading: true,
+        store: configureStore(() => this.setState({isLoading: false})),
+      };
+    }
     render() {
-      const store = configureStore();
-
+      if (this.state.isLoading) {
+        return null;
+      }
       return (
-        <Provider store={store}>
-          {() => <App />}
+        <Provider store={this.state.store}>
+          <App />
         </Provider>
       );
-
     }
-  });
-
-  AppRegistry.registerComponent('roomfinder', () => Root);
+  }
+  return (Root: React.Component);
 }
+export default createApp

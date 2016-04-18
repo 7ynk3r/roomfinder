@@ -1,4 +1,5 @@
-/** 
+
+/**
 TODO
 - Relojito, button actions names and transitions, crashlytics + google analytics.
 - error handling.
@@ -6,8 +7,10 @@ TODO
 - add more testing.
 */
 
+// @flow
 'use strict';
 
+import React, { AppRegistry } from 'react-native';
 import createApp from './src/createApp';
 
-createApp('ios');
+AppRegistry.registerComponent('roomfinder', createApp);

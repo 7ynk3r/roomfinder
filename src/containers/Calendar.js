@@ -5,7 +5,7 @@ import _ from 'underscore'
 
 import React, { View, StatusBarIOS, StyleSheet } from 'react-native';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux/native';
+import { connect } from 'react-redux';
 import { Map } from 'immutable';
 
 import theme from '../components/theme'
@@ -22,10 +22,10 @@ const actions = [
 ];
 
 
-const mapStateToProps = state => {  
-  
+const mapStateToProps = state => {
+
   logJSON(state.auth, "state.auth")
-  
+
   const calendar = state.calendar.toJS();
   const events = _.values(calendar.eventById);
   const eventsBySlotId = _.groupBy(events, 'slotId');
@@ -36,7 +36,7 @@ const mapStateToProps = state => {
   return { 'calendar' : {
     ...calendar, slotIds, slotEventIds, slotSizes, slotSize
   }};
-  
+
 };
 
 const mapDispatchToProps = dispatch => {
@@ -55,9 +55,9 @@ class Calendar extends React.Component {
 
   componentWillReceiveProps(props) {
     logJSON('Calendar.componentWillReceiveProps');
-    
+
   }
-  
+
   componentWillMount() {
     logJSON('Calendar.componentWillMount');
     StatusBarIOS.setStyle('light-content');
@@ -66,7 +66,7 @@ class Calendar extends React.Component {
   componentDidMount() {
     logJSON('Calendar.componentDidMount');
   }
-  
+
   render () {
     logJSON('Calendar.render');
     const calendar = this.props.calendar;
@@ -75,12 +75,12 @@ class Calendar extends React.Component {
 
     return (
       <View style={styles.container}>
-        <FilterBar 
+        <FilterBar
           slotSizes={calendar.slotSizes}
           slotSize={calendar.slotSize}
           onChangeEventSize={actions.changeSlotSize}
         />
-        <EventList 
+        <EventList
           style={styles.eventList}
           calendar={calendar}
           onGetEvents={actions.getEvents}
@@ -91,7 +91,7 @@ class Calendar extends React.Component {
       </View>
     );
   }
-  
+
 };
 
 var styles = StyleSheet.create({
@@ -105,4 +105,3 @@ var styles = StyleSheet.create({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);
-
