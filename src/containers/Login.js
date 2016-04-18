@@ -17,6 +17,7 @@ import * as authActions from '../actions/auth';
 const actions = [ authActions ];
 
 function mapStateToProps(state) {
+  console.log('mapStateToProps ' + JSON.stringify(state));
   return { ...state };
 };
 
@@ -25,7 +26,6 @@ function mapDispatchToProps(dispatch) {
           .merge(...actions)
           .filter(value => typeof value === 'function')
           .toObject();
-  debugger;
   return {
     actions: bindActionCreators(creators, dispatch),
     dispatch
