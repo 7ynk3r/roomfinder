@@ -42,14 +42,14 @@ var Login = React.createClass({
     + '?client_id=' + this.props.client_id
     + '&redirect_uri=' + 'http%3A%2F%2Flocalhost'
     + '&response_type=' + 'code'
-    + '&scope=' + 'https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fadmin.directory.resource.calendar.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar' 
+    + '&scope=' + 'https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fadmin.directory.resource.calendar.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar'
     + '&access_type=' + 'offline';
 
     logJSON(authorization_url, "authorization_url");
 
     return (
       <WebView
-        url={authorization_url}
+        source={{uri: authorization_url}}
         style={styles.webView}
         automaticallyAdjustContentInsets={false}
         javaScriptEnabledAndroid={true}

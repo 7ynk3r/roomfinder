@@ -5,7 +5,7 @@
 // import initialState from './initialState';
 // import { AUTHENTICATE } from './actionTypes';
 
-import { Action } from '../actions/types'
+import types from '../actions/types'
 import createRestReducer from './createRestReducer'
 // import { Record, List, Map } from 'immutable';
 //
@@ -14,14 +14,12 @@ import createRestReducer from './createRestReducer'
 //   code: '',
 // });
 
-type AuthState = { authenticated: boolean, code: string };
-
 const initialState = {
   authenticated: false,
   code: ''
 };
 
-export default (state: AuthState = initialState, action: Action = {}) => {
+export default (state: Authentication = initialState, action: Action = {}) => {
   // logJSON(action, "auth action")
   const { type, code } = action;
   switch(type) {
