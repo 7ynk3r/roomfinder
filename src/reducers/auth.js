@@ -7,24 +7,25 @@
 
 import types from '../actions/types'
 import createRestReducer from './createRestReducer'
-import { Record, List, Map } from 'immutable';
+// import { Record, List, Map } from 'immutable';
+//
+// const Authentication = Record({
+//   authenticated : false,
+//   code: '',
+// });
 
-const Authentication = Record({
-  authenticated : false,
-  code: '',
-});
-
-const initialState = new Authentication();
+const initialState = {
+  authenticated: false,
+  code: ''
+};
 
 export default (state: Authentication = initialState, action: Action = {}) => {
   // logJSON(action, "auth action")
   const { type, code } = action;
-
   switch(type) {
     case 'AUTHENTICATED':
       const authenticated = code && code.length > 0;
-      debugger;
-      state = state.merge({authenticated, code});
+      state = {authenticated, code};
       break;
   }
   return state;

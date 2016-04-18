@@ -9,20 +9,16 @@ import App from './containers/App';
 function createApp(): React.Component {
   class Root extends React.Component {
     state: {
-      isLoading: boolean,
       store: Object
     };
     constructor() {
       super();
       this.state = {
-        isLoading: true,
-        store: configureStore(() => this.setState({isLoading: false})),
+        store: configureStore(),
       };
     }
     render() {
-      if (this.state.isLoading) {
-        return null;
-      }
+      console.log('createApp.render');
       return (
         <Provider store={this.state.store}>
           <App />
@@ -30,6 +26,6 @@ function createApp(): React.Component {
       );
     }
   }
-  return (Root: React.Component);
+  return Root;
 }
 export default createApp

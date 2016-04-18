@@ -34,6 +34,7 @@ function mapDispatchToProps(dispatch) {
 
 class Login extends React.Component {
   render () {
+    console.log('Login.render');
     const actions = this.props.actions;
     let component = <LoginView
         client_id={secret.google.client_id}
