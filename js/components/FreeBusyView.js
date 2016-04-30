@@ -21,10 +21,22 @@ export default class FreeBusyView extends React.Component {
     hours.push({'name':timeI.toString('h TT'), 'isLast':true});
 
     // busy
-    const cal = freeBusy.calendars["medallia.com_32343532323235353636@resource.calendar.google.com"];
+    let busy = freeBusy.calendars["medallia.com_32343532323235353636@resource.calendar.google.com"].busy;
+    var previousLenght = 0;
+    busy = busy.map(b => {
+      const start = new XDate(b.start);
+      const end = new XDate(b.end);
+      const offset = timeMin.diffMinutes(start)-previousLenght;
+      const lenght = start.diffMinutes(end);
+      previousLenght+=lenght;
+      return { start, end, offset, lenght };
+    })
+
+    console.log('busy ' + JSON.stringify(busy));
 
     this.state = {
-      hours
+      hours,
+      busy,
     }
   }
   renderHour(hour) {
@@ -46,7 +58,61 @@ export default class FreeBusyView extends React.Component {
       </View>
     );
   }
+  renderBusy(busyBlock) {
+    const { start, end, offset, lenght } = busyBlock;
+    const top = Math.round((offset/60)*40+10);
+    const height = Math.round((lenght/60)*40);
+    const key=''+offset*lenght;
+    debugger;
+    return (
+      <Text
+        key={key}
+        style={{
+          height,
+          top,
+          left:0,
+          right:0,
+          backgroundColor:'gray',
+        }}
+      >
+        { start.toString('M/d/yy h(:mm)TT') + ' - ' + end.toString('M/d/yy h(:mm)TT') }
+      </Text>
+    );
+  }
   render() {
+    const that = this;
+    // return (
+    //   <View style={{flex:1, backgroundColor:'green'}}>
+    //     <View style={{position:'absolute', top:0, left:55, right:0, bottom:0, backgroundColor:'gray', opacity:.5}}>
+    //       <View style={{
+    //         backgroundColor:'yellow',
+    //         position:'absolute',
+    //         height:40,
+    //         top:40,
+    //         left:0,
+    //         right:0,
+    //       }}/>
+    //       <View style={{
+    //         backgroundColor:'blue',
+    //         position:'absolute',
+    //         height:40,
+    //         top:80,
+    //         left:0,
+    //         right:0,
+    //       }}/>
+    //       <View style={{
+    //         backgroundColor:'purple',
+    //         position:'absolute',
+    //         height:40,
+    //         top:120,
+    //         left:0,
+    //         right:0,
+    //       }}/>
+    //     </View >
+    //
+    //   </View >
+    // );
+
     return (
       <View style={{flex:1}}>
         <View style={{backgroundColor:'gray',height:64}}/>
@@ -59,6 +125,7 @@ export default class FreeBusyView extends React.Component {
         >
           { this.state.hours.map(this.renderHour) }
           <View style={{position:'absolute', top:0, left:55, right:0, bottom:0, backgroundColor:'yellow', opacity:.5}}>
+            { this.state.busy.map(this.renderBusy, that) }
           </View>
         </ScrollView>
       </View>
