@@ -5,7 +5,7 @@
 // import initialState from './initialState';
 // import { AUTHENTICATE } from './actionTypes';
 
-import types from '../actions/types'
+import type { Action } from '../actions/types'
 import createRestReducer from './createRestReducer'
 // import { Record, List, Map } from 'immutable';
 //
@@ -14,17 +14,21 @@ import createRestReducer from './createRestReducer'
 //   code: '',
 // });
 
+type AuthState = { authenticated: boolean, code: string };
+type State = AuthState;
+
 const initialState = {
   authenticated: false,
   code: ''
 };
 
-export default (state: Authentication = initialState, action: Action = {}) => {
+function auth(state: State = initialState, action: Action): State {
   // logJSON(action, "auth action")
   const { type, code } = action;
+
   switch(type) {
     case 'AUTHENTICATED':
-      const authenticated = code && code.length > 0;
+      const authenticated = code !== undefined && code.length > 0;
       state = {authenticated, code};
       break;
   }
@@ -37,3 +41,5 @@ export default (state: Authentication = initialState, action: Action = {}) => {
 // }
 //
 // export default createRestReducer('AUTHENTICATED', fromCode)
+
+export default auth;

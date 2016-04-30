@@ -1,7 +1,7 @@
 // @flow
 
-exports default {
-  "calendars" :
+export default {
+  "calendarList" :
   {
     "items": [
       {
@@ -477,5 +477,59 @@ exports default {
         "resourceEmail": "medallia.com_39393036353339382d313338@resource.calendar.google.com"
       }
     ]
+  },
+  /**
+    {
+      "timeMin": "2015-10-09T04:00:00.000Z",
+      "timeMax": "2015-10-10T02:00:00.000Z",
+      "items": [
+        {"id": "medallia.com_32343532323235353636@resource.calendar.google.com"},
+        {"id": "medallia.com_3436313935323233373333@resource.calendar.google.com"}
+      ]
+    }
+  */
+  "freeBusy":
+  {
+    "timeMax": "2015-10-10T02:00:00.000Z",
+    "kind": "calendar#freeBusy",
+    "calendars": {
+      "medallia.com_32343532323235353636@resource.calendar.google.com": {
+        "busy": [
+          {
+            "start": "2015-10-09T15:30:00Z",
+            "end": "2015-10-09T16:55:00Z"
+          },
+          {
+            "start": "2015-10-09T17:00:00Z",
+            "end": "2015-10-09T21:00:00Z"
+          },
+          {
+            "start": "2015-10-09T22:00:00Z",
+            "end": "2015-10-09T23:30:00Z"
+          }
+        ]
+      },
+      "medallia.com_3436313935323233373333@resource.calendar.google.com": {
+        "busy": [
+          {
+            "start": "2015-10-09T16:00:00Z",
+            "end": "2015-10-09T17:30:00Z"
+          },
+          {
+            "start": "2015-10-09T19:30:00Z",
+            "end": "2015-10-09T20:00:00Z"
+          },
+          {
+            "start": "2015-10-09T20:15:00Z",
+            "end": "2015-10-09T21:00:00Z"
+          },
+          {
+            "start": "2015-10-09T22:00:00Z",
+            "end": "2015-10-10T01:00:00Z"
+          }
+        ]
+      }
+    },
+    "timeMin": "2015-10-09T04:00:00.000Z"
   }
 }

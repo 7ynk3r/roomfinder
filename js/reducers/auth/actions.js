@@ -3,7 +3,7 @@
 'use strict';
 
 import { AUTHENTICATE } from './actionTypes'
-import { _promiseActionThunk, _makeReadyAction, _delay } from '../common/actions.js'
+// import { _promiseActionThunk, _makeReadyAction, _delay } from '../common/actions.js'
 import secret from './secret'
 import googleapi from '../../lib/googleapi'
 
@@ -23,7 +23,8 @@ export const authenticate = (code:string) => {
     secret.google.client_secret
   );
 
-  return _promiseActionThunk(promise, action);
+  // return _promiseActionThunk(promise, action);
+  return undefined;
 }
 
 // Mock
@@ -31,6 +32,7 @@ export const authenticate = (code:string) => {
 export const _authenticateMock = (code:string) => {
   const action = _authenticate(code);
   const result = {};
-  const promise = _delay(2000).then(()=>Promise.resolve(result));
-  return _promiseActionThunk(promise, action);
+  // const promise = _delay(2000).then(()=>Promise.resolve(result));
+  // return _promiseActionThunk(promise, action);
+  return undefined;
 }

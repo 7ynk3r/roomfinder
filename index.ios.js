@@ -11,6 +11,7 @@ TODO
 'use strict';
 
 import React, { AppRegistry } from 'react-native';
-import createApp from './src/createApp';
+import createApp from './js/setup';
+// import createApp from './js/Playground';
 
 AppRegistry.registerComponent('roomfinder', createApp);

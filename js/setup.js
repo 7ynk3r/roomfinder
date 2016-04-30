@@ -4,16 +4,24 @@
 import React from 'react-native';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
-import App from './containers/App';
+import App from './App';
 
-function createApp(): React.Component {
+function setup(): any {
+  console.disableYellowBox = true;
+
+  type State = {
+    isLoading: boolean,
+    store: Object,
+  };
+
   class Root extends React.Component {
-    state: {
-      store: Object
-    };
+    state: State;
     constructor() {
       super();
       this.state = {
+        // isLoading: false,
+        // store: configureStore(() => this.setState({isLoading: false})),
+        isLoading: true,
         store: configureStore(),
       };
     }
@@ -28,4 +36,4 @@ function createApp(): React.Component {
   }
   return Root;
 }
-export default createApp
+export default setup
